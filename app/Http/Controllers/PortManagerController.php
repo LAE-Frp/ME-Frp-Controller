@@ -29,6 +29,18 @@ class PortManagerController extends Controller
             return $this->failed('找不到隧道。');
         }
 
+        switch ($host->status) {
+            case 'stopped':
+                return $this->failed('隧道已停止。');
+                break;
+            case 'error':
+                return $this->failed('隧道出错。');
+                break;
+            case 'suspended':
+                return $this->failed('隧道已暂停。');
+                break;
+        }
+
         if ($request->content['proxy_type'] !== $host->protocol) {
             return $this->failed('不允许的隧道协议。');
         }
