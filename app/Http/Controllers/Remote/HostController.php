@@ -16,7 +16,7 @@ class HostController extends Controller
             case 'running':
                 $this->http->post('/tasks', [
                     'title' => '正在解除暂停。',
-                    'host_id' => $host->id,
+                    'host_id' => $host->host_id,
                     'status' => 'done',
                 ])->json();
 
@@ -42,7 +42,7 @@ class HostController extends Controller
 
                 $this->http->post('/tasks', [
                     'title' => '服务器已暂停。',
-                    'host_id' => $host->id,
+                    'host_id' => $host->host_id,
                     'status' => 'done',
                 ])->json();
 

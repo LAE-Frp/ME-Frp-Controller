@@ -14,6 +14,12 @@ class Host extends Model
         'sk', 'status', 'server_id', 'user_id', 'price', 'host_id'
     ];
 
+    // 路由主键为 host_id
+    public function getRouteKeyName()
+    {
+        return 'host_id';
+    }
+
     public function server()
     {
         return $this->belongsTo(Server::class);
