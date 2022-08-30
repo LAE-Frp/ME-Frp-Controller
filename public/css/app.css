@@ -1,0 +1,40 @@
+table {
+    /* 边框 */
+    border-collapse: collapse;
+    border-spacing: 0;
+
+}
+
+table tr {
+    border-top: 1px solid #c6c7cc;
+    background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+    background-color: #f6f6f6;
+}
+
+table th {
+    /* 字体 */
+    font-size: 14px;
+    font-weight: 500;
+    /* 宽度 */
+    width: 100px;
+    /* 高度 */
+    padding: 12px;
+    /* 左右填充 */
+    text-align: left;
+    /* 字体颜色 */
+    color: #333;
+}
+
+table td {
+    /* 字体 */
+    font-size: 14px;
+    /* 宽度 */
+    padding: 12px;
+    /* 左右填充 */
+    text-align: left;
+    /* 字体颜色 */
+    color: #333;
+}
