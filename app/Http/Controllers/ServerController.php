@@ -100,15 +100,9 @@ class ServerController extends Controller
         //     'status' => 'required',
         // ]);
 
-        $request->validate($this->rules($server->id));
+        // $request->validate($this->rules($server->id));
 
         $data = $request->toArray();
-
-        $data['allow_http'] = $request->allow_http ?? 0;
-        $data['allow_https'] = $request->allow_https ?? 0;
-        $data['allow_tcp'] = $request->allow_tcp ?? 0;
-        $data['allow_udp'] = $request->allow_udp ?? 0;
-        $data['allow_stcp'] = $request->allow_stcp ?? 0;
 
         $server->update($data);
 

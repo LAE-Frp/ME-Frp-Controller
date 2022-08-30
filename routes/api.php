@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PortManagerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('tunnel')->name('api.tunnel.')->group(function () {
-    Route::post('/handler/{server}', [Controllers\PortManagerController::class, 'handler'])->name('handler');
+    Route::post('/handler/{server}', [PortManagerController::class, 'handler'])->name('handler');
 });

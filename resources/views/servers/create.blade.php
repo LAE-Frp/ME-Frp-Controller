@@ -36,23 +36,28 @@
 
                 <div class="mb-3">
                     <label for="dashboardPort" class="form-label">端口</label>
-                    <input type="text" required class="form-control" id="dashboardPort" name="dashboard_port" value="7500">
+                    <input type="text" required class="form-control" id="dashboardPort" name="dashboard_port"
+                        value="7500">
                 </div>
 
                 <div class="mb-3">
                     <label for="dashboardUser" class="form-label">登录用户名</label>
-                    <input type="text" required class="form-control" id="dashboardUser" name="dashboard_user" value="admin">
+                    <input type="text" required class="form-control" id="dashboardUser" name="dashboard_user"
+                        value="admin">
                 </div>
 
                 <div class="mb-3">
                     <label for="dashboardPwd" class="form-label">密码</label>
-                    <input type="text" required class="form-control" id="dashboardPwd" name="dashboard_password" value="admin">
+                    <input type="text" required class="form-control" id="dashboardPwd" name="dashboard_password"
+                        value="admin">
                 </div>
 
                 <h3>端口范围限制</h3>
                 <div class="input-group input-group-sm mb-3">
-                    <input type="text" required class="form-control" placeholder="最小端口,比如: 10000" name="min_port" value="10000">
-                    <input type="text" required class="form-control" placeholder="最大端口,比如: 65535" name="max_port" value="65535">
+                    <input type="text" required class="form-control" placeholder="最小端口,比如: 10000" name="min_port"
+                        value="10000">
+                    <input type="text" required class="form-control" placeholder="最大端口,比如: 65535" name="max_port"
+                        value="65535">
                 </div>
 
                 <h3>最多隧道数量</h3>
@@ -98,6 +103,27 @@
                     <label class="form-check-label" for="allow_stcp">
                         允许 STCP
                     </label>
+                </div>
+
+                <p>每 GB 需要消耗的 Drops</p>
+                <div class="row">
+                    <div class="col-auto">
+                        <div class="input-group input-group-sm mb-3">
+                            <input type="text" value="{{ $server->price_per_gb }}" required class="form-control"
+                                placeholder="每 GB 需要消耗的 Drops" name="price_per_gb">
+                        </div>
+                    </div>
+                </div>
+
+                <p>服务器是否位于中国大陆</p>
+                <div class="row">
+                    <div class="col-auto">
+                        <div class="input-group input-group-sm mb-3">
+                            {{-- checkbox --}}
+                            <input type="checkbox" name="is_china" value="1" id="is_china_mainland"
+                                @if ($server->is_china_mainland) checked @endif>
+                        </div>
+                    </div>
                 </div>
 
 

@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <nav>
+    {{-- <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <button class="nav-link active" aria-selected="true" data-bs-toggle="tab" data-bs-target="#nav-info"
                 type="button" role="tab">基础信息</button>
@@ -11,7 +11,8 @@
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#nav-frps" type="button" role="tab">Frps
                 配置文件</button>
         </div>
-    </nav>
+    </nav> --}}
+
     <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade" id="nav-settings" role="tabpanel">
             <div class="row mt-3">
@@ -85,8 +86,8 @@
 
                     <h3>隧道协议限制</h3>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="allow_http" value="1"
-                            id="allow_http" @if ($server->allow_http) checked @endif>
+                        <input class="form-check-input" type="checkbox" name="allow_http" value="1" id="allow_http"
+                            @if ($server->allow_http) checked @endif>
                         <label class="form-check-label" for="allow_http">
                             允许 HTTP
                         </label>
@@ -126,6 +127,29 @@
                         </label>
                     </div>
 
+                    <p>每 GB 需要消耗的 Drops</p>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" value="{{ $server->price_per_gb }}" required
+                                    class="form-control" placeholder="每 GB 需要消耗的 Drops" name="price_per_gb">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="input-group input-group-sm mb-3">
+                                {{-- checkbox --}}
+                                <input type="checkbox" value="1" name="is_china_mainland"
+                                    id="is_china_mainland" @if ($server->is_china_mainland) checked @endif>
+                                <span>服务器是否位于中国大陆</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+
 
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary mb-3">保存更改</button>
@@ -141,6 +165,9 @@
                 </div>
             </div>
         </div>
+
+
+
 
         @php($serverInfo = (object) (new \App\Http\Controllers\FrpController($server->id))->serverInfo())
         <div class="tab-pane fade show active" id="nav-info" role="tabpanel">
@@ -221,6 +248,50 @@
                 </tbody>
             </table>
         </div>
+
+        @if ($server->status == 'down')
+            <span style="color: red">无法连接到服务器。</span>
+            <form action="{{ route('servers.update', $server->id) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="status" value="up" />
+                <button type="submit">强制标记为在线</button>
+            </form>
+        @else
+            <span style="color: green">正常</span>
+
+            <form action="{{ route('servers.update', $server->id) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="status" value="down" />
+                <button type="submit">标记为离线</button>
+            </form>
+        @endif
+
+
+        @if ($server->status == 'maintenance')
+            <span style="color: red">维护中</span>
+
+            <form action="{{ route('servers.update', $server->id) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="status" value="down" />
+                <button type="submit">取消维护</button>
+            </form>
+        @else
+            <form action="{{ route('servers.update', $server->id) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <input type="hidden" name="status" value="maintenance" />
+                <button type="submit">开始维护</button>
+            </form>
+        @endif
+
+        <form action="{{ route('servers.destroy', $server->id) }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit">删除</button>
+        </form>
 
         <div class="tab-pane fade" id="nav-frps" role="tabpanel">
             <textarea readonly class="form-control" rows="20" cols="80">[common]

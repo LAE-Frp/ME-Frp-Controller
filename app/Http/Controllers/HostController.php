@@ -45,12 +45,16 @@ class HostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Host  $host
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Host $host)
     {
         //
+
+        $host->load('server');
+
+        return view('hosts.show', compact('host'));
     }
 
     /**
@@ -81,14 +85,14 @@ class HostController extends Controller
 
         // if status is cost
         if ($request->status == 'cost') {
-            $this->http->patch('hosts/' . $host->id, [
+            $this->http->patch('hosts/' . $host->host_id, [
                 'cost_once' => $host->price,
             ]);
             return back()->with('success', '已发送扣费请求。');
         }
 
 
-        $this->http->patch('hosts/' . $host->id, [
+        $this->http->patch('hosts/' . $host->host_id, [
             'status' => $request->status,
         ]);
 

@@ -11,16 +11,20 @@ class PortManagerController extends Controller
 {
     public function handler(Request $request, Server $server)
     {
-        if (is_null($server)) {
-            return $this->failed('服务器不存在。');
-        }
-
         if ($request->op != 'NewProxy') {
             return $this->failed('登录失败，请检查配置文件。');
         }
 
         if (!is_null($request->content['user']['user'])) {
             return $this->failed('用户不被允许。');
+        }
+
+        if (is_null($server)) {
+            return $this->failed('服务器不存在。');
+        }
+
+        if ($server->status != 'up') {
+            return $this->failed('此服务器暂时不接受新的连接。');
         }
 
         // Search tunnel

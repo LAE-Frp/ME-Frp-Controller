@@ -27,7 +27,7 @@
         <tbody>
             @foreach ($hosts as $host)
                 <tr>
-                    <td>{{ $host->id }}</td>
+                    <td>{{ $host->host_id }}</td>
                     <td>{{ $host->name }}</td>
                     <td>{{ $host->user->name }}</td>
                     <td>{{ $host->price }}</td>
@@ -59,17 +59,17 @@
                     <td>{{ $host->created_at }}</td>
                     <td>{{ $host->updated_at }}</td>
                     <td>
-                        {{-- <a href="{{ route('hosts.edit', $host->id) }}">编辑</a> --}}
+                        <a href="{{ route('hosts.show', $host->host_id) }}">显示配置文件</a>
 
                         @if ($host->status == 'suspended')
-                            <form action="{{ route('hosts.update', $host->id) }}" method="POST">
+                            <form action="{{ route('hosts.update', $host->host_id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="running" />
                                 <button type="submit">取消暂停</button>
                             </form>
                         @else
-                            <form action="{{ route('hosts.update', $host->id) }}" method="POST">
+                            <form action="{{ route('hosts.update', $host->host_id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="suspended" />
@@ -78,14 +78,14 @@
                         @endif
 
                         @if ($host->status == 'stopped')
-                            <form action="{{ route('hosts.update', $host->id) }}" method="POST">
+                            <form action="{{ route('hosts.update', $host->host_id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="running" />
                                 <button type="submit">启动</button>
                             </form>
                         @else
-                            <form action="{{ route('hosts.update', $host->id) }}" method="POST">
+                            <form action="{{ route('hosts.update', $host->host_id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="stopped" />
@@ -94,14 +94,14 @@
                         @endif
 
 
-                        <form action="{{ route('hosts.update', $host->id) }}" method="POST"
+                        <form action="{{ route('hosts.update', $host->host_id) }}" method="POST"
                             onsubmit="return confirm('在非必要情况下，不建议手动扣费。要继续吗？')">
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="status" value="cost" />
                             <button type="submit">扣费</button>
                         </form>
-                        <form action="{{ route('hosts.destroy', $host->id) }}" method="POST"
+                        <form action="{{ route('hosts.destroy', $host->host_id) }}" method="POST"
                             onsubmit="return confirm('真的要删除吗？')">
                             @csrf
                             @method('DELETE')
