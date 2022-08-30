@@ -120,7 +120,7 @@
                     <div class="col-auto">
                         <div class="input-group input-group-sm mb-3">
                             {{-- checkbox --}}
-                            <input type="checkbox" name="is_china_mainland" value="1" id="is_china_mainland" @endif>
+                            <input type="checkbox" name="is_china_mainland" value="1" id="is_china_mainland">
                         </div>
                     </div>
                 </div>
