@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Remote\Functions;
 
+use App\Models\Host;
 use App\Models\Server;
 use App\Models\Tunnel;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Models\Host;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Controllers\FrpController;
 
 class HostController extends Controller
 {
@@ -16,6 +18,13 @@ class HostController extends Controller
     {
         // dd($request);
         $hosts = Host::thisUser()->get();
+
+
+        // 将所有 id 改为 host_id
+        foreach ($hosts as $host) {
+            $host->id = $host->host_id;
+        }
+
         return $this->success($hosts);
     }
 
@@ -173,6 +182,17 @@ class HostController extends Controller
     {
         $this->isUser($host);
 
+        $frp = new FrpController($host->server_id);
+
+        $traffic = $frp->traffic($host->client_token) ?? [];
+        $cache_key = 'frpTunnel_data_' . $host->client_token;
+        $tunnel = Cache::get($cache_key, []);
+
+        $host->id = $host->host_id;
+
+        $host->traffic = $traffic;
+        $host->tunnel = $tunnel;
+
         return $this->success($host);
     }
 
@@ -230,7 +250,7 @@ class HostController extends Controller
             }
         }
 
-        // 如果请求中没有状态操作，则更新其他字段，比如 name 等。
+        // 如果请求中没有状态操作，则更新其它字段，比如 name 等。
         // 更新时要注意一些安全问题，比如 user_id 不能被用户更新。
         // 这些我们在此函数一开始就检查了。
 
@@ -238,12 +258,15 @@ class HostController extends Controller
 
         // if has name
         if (isset($request['name'])) {
-            $this->http->patch('/hosts/' . $host->id, [
+            $this->http->patch('/hosts/' . $host->host_id, [
                 'name' => $request['name'],
             ]);
         }
 
         $host->update($request);
+
+        $host->id = $host->host_id;
+
         return $this->success($host);
     }
 
@@ -275,16 +298,26 @@ class HostController extends Controller
         //     'title' => '从我们的数据库中删除...',
         // ]);
 
+        $cache_key = 'frpTunnel_data_' . $host->client_token;
+        $tunnel_data = Cache::has($cache_key);
+
+        if ($tunnel_data) {
+            return $this->forbidden('请先关闭客户端连接后，等待大约 10 分钟左右再删除。');
+        }
+
+
         $host->delete();
 
         // 告诉云端，此主机已被删除。
-        $this->http->delete('/hosts/' . $host->id);
+        $this->http->delete('/hosts/' . $host->host_id);
 
         // // 完成任务
         // $this->http->patch('/tasks/' . $task_id, [
         //     'title' => '删除成功。',
         //     'status' => 'success',
         // ]);
+
+        $host->id = $host->host_id;
 
         return $this->deleted($host);
     }

@@ -7,6 +7,7 @@ use App\Jobs\ServerCheckJob;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ServerController extends Controller
 {
@@ -210,7 +211,9 @@ class ServerController extends Controller
             if (!isset($proxy['name'])) {
                 continue;
             }
+
             $cache_key = 'frpTunnel_data_' . $proxy['name'];
+
             Cache::put($cache_key, $proxy, 90);
         }
     }

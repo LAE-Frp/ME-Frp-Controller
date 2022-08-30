@@ -59,6 +59,7 @@ class Host extends Model
     protected static function boot()
     {
         parent::boot();
+
         static::creating(function ($model) {
             // if id exists
             if ($model->where('id', $model->id)->exists()) {

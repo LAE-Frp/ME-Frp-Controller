@@ -9,7 +9,7 @@
 
                 <div class="mb-3">
                     <label for="serverName" class="form-label">服务器名称</label>
-                    <input type="text" required class="form-control" id="serverName" placeholder="输入服务器名称，他将会被搜索到"
+                    <input type="text" required class="form-control" id="serverName" placeholder="输入服务器名称，它将会被搜索到"
                         name="name">
                 </div>
 

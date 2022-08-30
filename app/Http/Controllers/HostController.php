@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Host;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class HostController extends Controller
@@ -50,7 +51,6 @@ class HostController extends Controller
      */
     public function show(Host $host)
     {
-        //
 
         $host->load('server');
 
@@ -96,7 +96,7 @@ class HostController extends Controller
             'status' => $request->status,
         ]);
 
-        return back()->with('success', '正在执行对应的操作，操作将不会立即生效，因为他需要进行同步。');
+        return back()->with('success', '正在执行对应的操作，操作将不会立即生效，因为它需要进行同步。');
     }
 
     /**

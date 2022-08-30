@@ -17,6 +17,7 @@
         {{-- 顶部横向菜单 --}}
         <div class="top-menu">
             <ul>
+                <li><a href="/">首页</a></li>
                 <li><a href="{{ route('users.index') }}">已经发现的客户</a></li>
                 {{-- <li><a href="{{ route('products.index') }}">产品</a></li> --}}
                 <li><a href="{{ route('hosts.index') }}">主机</a></li>

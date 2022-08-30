@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Server;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,11 +12,20 @@ class IndexController extends Controller
 
     public function index()
     {
+
+        // test cost
+        // $handle = new Cost();
+        // $handle->handle();
+
         // if not login, redirect to login
         if (!Auth::check()) {
             return view('login');
         } else {
-            return view('index');
+
+
+            $servers = Server::where('status', '!=', 'up')->get();
+
+            return view('index', compact('servers'));
         }
     }
 

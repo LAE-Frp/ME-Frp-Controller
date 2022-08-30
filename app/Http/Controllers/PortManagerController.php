@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Host;
 use App\Models\Server;
-use App\Models\Tunnel;
 use Illuminate\Http\Request;
 
 class PortManagerController extends Controller
@@ -63,6 +62,10 @@ class PortManagerController extends Controller
                 return $this->failed('隧道配置文件有误。');
             }
         }
+
+        // cache
+        // $cache_key = 'frp_user_' . $request->content['proxy_name'];
+        // Cache::put($cache_key, $host->user_id);
 
         return $this->frpSuccess();
     }

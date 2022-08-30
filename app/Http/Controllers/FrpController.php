@@ -60,9 +60,15 @@ class FrpController extends Controller
         $addr = 'http://' . $this->frpServer->server_address . ':' . $this->frpServer->dashboard_port . '/api' . $url;
         try {
             $resp = Http::withBasicAuth($this->frpServer->dashboard_user, $this->frpServer->dashboard_password)->get($addr)->json() ?? [];
-        } catch (ConnectionException $e) {
-            unset($e);
+
+            if ($this->frpServer->status != 'up') {
+                $this->frpServer->status = 'up';
+            }
+        } catch (ConnectionException) {
+            $this->frpServer->status = 'down';
             $resp = false;
+        } finally {
+            $this->frpServer->save();
         }
 
         return $resp;
@@ -88,5 +94,4 @@ class FrpController extends Controller
             }
         }
     }
-
 }

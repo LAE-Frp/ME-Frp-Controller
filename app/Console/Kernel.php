@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\Cost;
 use App\Http\Controllers\ServerController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -20,6 +21,10 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             (new ServerController())->checkServer();
         })->everyMinute()->name('FrpServer')->withoutOverlapping()->onOneServer();
+
+        $schedule->call(function () {
+            (new Cost())->handle();
+        })->hourly()->name('FrpServerCost')->withoutOverlapping()->onOneServer();
     }
 
     /**
