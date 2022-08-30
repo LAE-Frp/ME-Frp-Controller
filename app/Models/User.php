@@ -22,5 +22,5 @@ class User extends Authenticatable
 
     // disable auto increment
     public $incrementing = false;
-    public $timestamps = false;
+    public $timestamps = true;
 }

@@ -109,7 +109,7 @@
                 <div class="row">
                     <div class="col-auto">
                         <div class="input-group input-group-sm mb-3">
-                            <input type="text" value="{{ $server->price_per_gb }}" required class="form-control"
+                            <input type="text" value="1" required class="form-control"
                                 placeholder="每 GB 需要消耗的 Drops" name="price_per_gb">
                         </div>
                     </div>
@@ -120,8 +120,7 @@
                     <div class="col-auto">
                         <div class="input-group input-group-sm mb-3">
                             {{-- checkbox --}}
-                            <input type="checkbox" name="is_china" value="1" id="is_china_mainland"
-                                @if ($server->is_china_mainland) checked @endif>
+                            <input type="checkbox" name="is_china_mainland" value="1" id="is_china_mainland" @endif>
                         </div>
                     </div>
                 </div>
