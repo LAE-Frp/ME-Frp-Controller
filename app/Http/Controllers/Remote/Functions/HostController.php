@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\FrpController;
+use Illuminate\Support\Arr;
 
 class HostController extends Controller
 {
@@ -141,7 +142,7 @@ class HostController extends Controller
 
         // 创建云端任务(告知用户执行情况)
 
-      
+
         // $task = $this->http->post('/tasks', [
         //     'title' => '正在寻找服务器',
         //     'host_id' => $host_id,
@@ -192,6 +193,37 @@ class HostController extends Controller
 
         $host->traffic = $traffic;
         $host->tunnel = $tunnel;
+
+        $host->load('server');
+
+        $host = $host->toArray();
+
+        $host['server'] = Arr::only($host['server'], [
+            'id',
+            'name',
+            'server_address',
+            'server_port',
+
+            'token',
+            'allow_http',
+            'allow_https',
+            'allow_tcp',
+            'allow_udp',
+            'allow_stcp',
+
+            'min_port',
+            'max_port',
+
+            'tunnels',
+            'max_tunnels',
+
+            'status',
+
+            'price_per_gb',
+            'is_china_mainland'
+        ]);
+
+
 
         return $this->success($host);
     }
