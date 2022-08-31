@@ -71,7 +71,7 @@ class HostController extends Controller
 
             $request->remote_port = 0;
             $request->validate([
-                "custom_domain" => 'required|unique:tunnels,custom_domain',
+                "custom_domain" => 'required|unique:hosts,custom_domain',
             ]);
 
             $request->custom_domain = Str::lower($request->custom_domain);
