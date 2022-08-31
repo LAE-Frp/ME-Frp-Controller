@@ -218,7 +218,9 @@ class HostController extends Controller
     public function update(Request $request, Host $host)
     {
         // 排除 request 中的一些参数
-        $request = $request->except(['id', 'user_id', 'host_id', 'price', 'managed_price', 'suspended_at', 'created_at', 'updated_at']);
+        // $request = $request->except(['id', 'user_id', 'host_id', 'price', 'managed_price', 'suspended_at', 'created_at', 'updated_at']);
+
+        $request = $request->only(['name', 'status']);
 
         // 如果 request 中 user_id 为 null，则是平台调用。否则是用户调用。
 
