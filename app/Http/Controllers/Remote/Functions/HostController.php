@@ -188,6 +188,11 @@ class HostController extends Controller
         $frp = new FrpController($host->server_id);
 
         $traffic = $frp->traffic($host->client_token) ?? [];
+
+        if (!$traffic) {
+            $traffic = [];
+        }
+
         $cache_key = 'frpTunnel_data_' . $host->client_token;
         $tunnel = Cache::get($cache_key, []);
 
