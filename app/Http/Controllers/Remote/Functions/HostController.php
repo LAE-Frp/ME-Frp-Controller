@@ -18,7 +18,9 @@ class HostController extends Controller
     public function index(Request $request)
     {
         // dd($request);
-        $hosts = Host::thisUser()->get();
+        $hosts = Host::thisUser()->with('server', function ($query) {
+            $query->select($this->filter());
+        })->get();
 
 
         // 将所有 id 改为 host_id
@@ -198,30 +200,7 @@ class HostController extends Controller
 
         $host = $host->toArray();
 
-        $host['server'] = Arr::only($host['server'], [
-            'id',
-            'name',
-            'server_address',
-            'server_port',
-
-            'token',
-            'allow_http',
-            'allow_https',
-            'allow_tcp',
-            'allow_udp',
-            'allow_stcp',
-
-            'min_port',
-            'max_port',
-
-            'tunnels',
-            'max_tunnels',
-
-            'status',
-
-            'price_per_gb',
-            'is_china_mainland'
-        ]);
+        $host['server'] = Arr::only($host['server'], $this->filter());
 
 
 
@@ -364,5 +343,33 @@ class HostController extends Controller
                 abort(403);
             }
         }
+    }
+
+
+    private function filter() {
+        return [
+            'id',
+            'name',
+            'server_address',
+            'server_port',
+
+            'token',
+            'allow_http',
+            'allow_https',
+            'allow_tcp',
+            'allow_udp',
+            'allow_stcp',
+
+            'min_port',
+            'max_port',
+
+            'tunnels',
+            'max_tunnels',
+
+            'status',
+
+            'price_per_gb',
+            'is_china_mainland'
+        ];
     }
 }
