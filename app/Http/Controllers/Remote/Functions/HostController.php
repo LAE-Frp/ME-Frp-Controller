@@ -40,6 +40,8 @@ class HostController extends Controller
             'server_id' => 'required',
         ]);
 
+        $data = $request->all();
+
         if (!strpos($request->local_address, ':')) {
             return $this->error('本地地址必须包含端口号。');
         }
@@ -48,7 +50,7 @@ class HostController extends Controller
 
         // port must be a number
         if (!is_numeric($local_ip_port[1])) {
-            return $this->error('本地地址端口号必须是数字。');
+            return $this->error('端口号必须是数字。');
         }
 
         // port must be a number between 1 and 65535
@@ -71,18 +73,28 @@ class HostController extends Controller
             //     return failed('必须要先实名认证才能创建 HTTP(S) 隧道。');
             // }
 
-            $request->remote_port = 0;
+            if ($request->has('remote_port')) {
+                return $this->error('此协议不支持指定远程端口号。');
+            }
+
+
+            $data['remote_port'] = null;
+
             $request->validate([
                 "custom_domain" => 'required|unique:hosts,custom_domain',
             ]);
 
-            $request->custom_domain = Str::lower($request->custom_domain);
+            $data['custom_domain'] = Str::lower($request->custom_domain);
 
             if (str_contains($request->custom_domain, ',')) {
                 return $this->error('一次请求只能添加一个域名。');
             }
         } elseif ($request->protocol == 'tcp' || $request->protocol == 'udp') {
-            $request->custom_domain = null;
+            if ($request->has('custom_domain')) {
+                return $this->error('此协议不支持指定域名。');
+            }
+
+            $data['custom_domain']  = null;
             $request->validate([
                 "remote_port" => "required|integer|max:$server->max_port|min:$server->min_port|bail",
             ]);
@@ -96,15 +108,14 @@ class HostController extends Controller
                 return $this->error('这个远程端口已经被使用了。');
             }
         } else if ($request->protocol == 'stcp') {
-            $request->custom_domain = null;
-            $request->remote_port = null;
+            $data['custom_domain']  = null;
+            $data['remote_port'] = null;
 
             $request->validate(["sk" => 'required|alpha_dash|min:3|max:15']);
         } else {
             return $this->error('不支持的协议。');
         }
 
-        $data = $request->toArray();
         $data['protocol'] = Str::lower($data['protocol']);
 
         $test_protocol = 'allow_' . $data['protocol'];
@@ -134,7 +145,6 @@ class HostController extends Controller
 
 
         $data['status'] = 'running';
-
 
         $host = Host::create($data);
 
@@ -324,6 +334,9 @@ class HostController extends Controller
         }
 
 
+        $host->load('server');
+        $host->server->decrement('tunnels');
+
         $host->delete();
 
         // 告诉云端，此主机已被删除。
@@ -353,7 +366,8 @@ class HostController extends Controller
     }
 
 
-    private function filter() {
+    private function filter()
+    {
         return [
             'id',
             'name',
