@@ -73,9 +73,9 @@ class HostController extends Controller
             //     return failed('必须要先实名认证才能创建 HTTP(S) 隧道。');
             // }
 
-            if ($request->has('remote_port')) {
-                return $this->error('此协议不支持指定远程端口号。');
-            }
+            // if ($request->has('remote_port')) {
+            //     return $this->error('此协议不支持指定远程端口号。');
+            // }
 
 
             $data['remote_port'] = null;
@@ -90,9 +90,9 @@ class HostController extends Controller
                 return $this->error('一次请求只能添加一个域名。');
             }
         } elseif ($request->protocol == 'tcp' || $request->protocol == 'udp') {
-            if ($request->has('custom_domain')) {
-                return $this->error('此协议不支持指定域名。');
-            }
+            // if ($request->has('custom_domain')) {
+            //     return $this->error('此协议不支持指定域名。');
+            // }
 
             $data['custom_domain']  = null;
             $request->validate([
