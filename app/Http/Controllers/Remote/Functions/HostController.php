@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\FrpController;
 use Illuminate\Support\Arr;
+use Ramsey\Uuid\Rfc4122\UuidV4;
 
 class HostController extends Controller
 {
@@ -260,14 +261,14 @@ EOF;
         // 排除 request 中的一些参数
         // $request = $request->except(['id', 'user_id', 'host_id', 'price', 'managed_price', 'suspended_at', 'created_at', 'updated_at']);
 
-        $request = $request->only(['name', 'status', 'local_address']);
+        $request_data = $request->only(['name', 'status', 'local_address', 'reset_token']);
 
         // 如果 request 中 user_id 为 null，则是平台调用。否则是用户调用。
 
         // 下面是状态操作，如果没有对状态进行操作，则不更新。
         // 并且状态操作是要被优先处理的。
-        if (isset($request['status'])) {
-            switch ($request['status']) {
+        if ($request->has('status')) {
+            switch ($request->status) {
                 case 'running':
                     // 当启动或解除暂停时
 
@@ -310,13 +311,20 @@ EOF;
         // 此时，你可以通知云平台，主机已经更新。但是也请注意安全。
 
         // if has name
-        if (isset($request['name'])) {
+        if ($request->has('name')) {
             $this->http->patch('/hosts/' . $host->host_id, [
                 'name' => $request['name'],
             ]);
         }
 
-        $host->update($request);
+        if ($request->has('reset_token')) {
+            $host->client_token = UuidV4::uuid4()->toString();
+            $host->save();
+
+            return $this->updated($host);
+        }
+
+        $host->update($request_data);
 
         $host->id = $host->host_id;
 
