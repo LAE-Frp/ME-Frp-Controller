@@ -218,7 +218,7 @@ class HostController extends Controller
         $config = [];
 
         $config['server'] = <<<EOF
-[server]
+[common]
 server_addr = {$host->server->server_address}
 server_port = {$host->server->server_port}
 token = {$host->server->token}
@@ -235,7 +235,7 @@ EOF;
         if ($host->protocol == 'tcp' || $host->protocol == 'udp') {
             $config['client'] .= PHP_EOL . 'remote_port = ' . $host->remote_port;
         } else if ($host->protocol == 'http' || $host->protocol == 'https') {
-            $config['client'] .= PHP_EOL . 'custom_domain = ' . $host->custom_domain . PHP_EOL;
+            $config['client'] .= PHP_EOL . 'custom_domains = ' . $host->custom_domain . PHP_EOL;
         }
 
 
