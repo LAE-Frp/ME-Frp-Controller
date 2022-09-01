@@ -213,10 +213,11 @@ class HostController extends Controller
 
         $host->load('server');
 
-
+        // 配置文件
         $config = [];
 
         $config['server'] = <<<EOF
+[server]
 server_addr = {$host->server->server_address}
 server_port = {$host->server->server_port}
 token = {$host->server->token}
