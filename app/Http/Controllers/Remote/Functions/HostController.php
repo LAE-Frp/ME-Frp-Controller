@@ -261,7 +261,7 @@ EOF;
         // 排除 request 中的一些参数
         // $request = $request->except(['id', 'user_id', 'host_id', 'price', 'managed_price', 'suspended_at', 'created_at', 'updated_at']);
 
-        $request_data = $request->only(['name', 'status', 'local_address', 'reset_token']);
+        $request_data = $request->only(['name', 'status', 'local_address', 'reset_token', 'local_address']);
 
         // 如果 request 中 user_id 为 null，则是平台调用。否则是用户调用。
 
@@ -317,17 +317,28 @@ EOF;
             ]);
         }
 
-        if ($request->has('reset_token')) {
+        if ($request->reset_token) {
             $cache_key = 'frpTunnel_data_' . $host->client_token;
             $tunnel_data = Cache::has($cache_key);
 
             if ($tunnel_data) {
                 return $this->forbidden('请先关闭客户端连接后，等待大约 10 分钟左右再重置。');
             } else {
-                $host->client_token = Str::random(51);
-                $host->save();
+                $request_data['client_token'] = Str::random(51);
+            }
+        }
 
-                return $this->updated($host);
+        if ($request->has('local_address')) {
+            $local_ip_port = explode(':', $request->local_address);
+
+            // port must be a number
+            if (!is_numeric($local_ip_port[1])) {
+                return $this->error('端口号必须是数字。');
+            }
+
+            // port must be a number between 1 and 65535
+            if ($local_ip_port[1] < 1 || $local_ip_port[1] > 65535) {
+                return $this->error('本地地址端口号必须在 1 和 65535 之间。');
             }
         }
 
