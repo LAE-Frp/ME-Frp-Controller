@@ -318,10 +318,17 @@ EOF;
         }
 
         if ($request->has('reset_token')) {
-            $host->client_token = UuidV4::uuid4()->toString();
-            $host->save();
+            $cache_key = 'frpTunnel_data_' . $host->client_token;
+            $tunnel_data = Cache::has($cache_key);
 
-            return $this->updated($host);
+            if ($tunnel_data) {
+                return $this->forbidden('请先关闭客户端连接后，等待大约 10 分钟左右再重置。');
+            } else {
+                $host->client_token = UuidV4::uuid4()->toString();
+                $host->save();
+
+                return $this->updated($host);
+            }
         }
 
         $host->update($request_data);
