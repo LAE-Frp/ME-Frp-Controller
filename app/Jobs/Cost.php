@@ -70,10 +70,13 @@ class Cost implements ShouldQueue
                             // 计算价格
                             $cost = $traffic * $host->server->price_per_gb;
 
-                            // 发送扣费请求
-                            $this->http->patch('hosts/' . $host->host_id, [
-                                'cost_once' => $cost,
-                            ]);
+                            // 如果计费金额大于 0，则扣费
+                            if ($cost > 0) {
+                                // 发送扣费请求
+                                $this->http->patch('hosts/' . $host->host_id, [
+                                    'cost_once' => $cost,
+                                ]);
+                            }
                         }
                     }
                 }
