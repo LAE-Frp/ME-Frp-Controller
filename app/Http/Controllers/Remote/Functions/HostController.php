@@ -213,10 +213,34 @@ class HostController extends Controller
 
         $host->load('server');
 
+
+        $config = [];
+
+        $config['server'] = <<<EOF
+server_addr = {$host->server->server_address}
+server_port = {$host->server->server_port}
+token = {$host->server->token}
+EOF;
+
+        $local_addr = explode(':', $host->local_address);
+        $config['client'] = <<<EOF
+[{$host->client_token}]
+type = {$host->protocol}
+local_ip = {$local_addr[0]}
+local_port = {$local_addr[1]}
+EOF;
+
+        if ($host->protocol == 'tcp' || $host->protocol == 'udp') {
+            $config['client'] .= PHP_EOL . 'remote_port = ' . $host->remote_port;
+        } else if ($host->protocol == 'http' || $host->protocol == 'https') {
+            $config['client'] .= PHP_EOL . 'custom_domain = ' . $host->custom_domain . PHP_EOL;
+        }
+
+
         $host = $host->toArray();
 
         $host['server'] = Arr::only($host['server'], $this->filter());
-
+        $host['config'] = $config;
 
 
         return $this->success($host);
