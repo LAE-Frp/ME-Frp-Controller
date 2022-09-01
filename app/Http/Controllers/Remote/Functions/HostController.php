@@ -324,7 +324,7 @@ EOF;
             if ($tunnel_data) {
                 return $this->forbidden('请先关闭客户端连接后，等待大约 10 分钟左右再重置。');
             } else {
-                $host->client_token = UuidV4::uuid4()->toString();
+                $host->client_token = Str::random(51);
                 $host->save();
 
                 return $this->updated($host);
