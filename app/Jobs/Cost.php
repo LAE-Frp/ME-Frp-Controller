@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Support\Facades\Log;
 
 class Cost implements ShouldQueue
 {
@@ -69,6 +70,12 @@ class Cost implements ShouldQueue
 
                             // 计算价格
                             $cost = $traffic * $host->server->price_per_gb;
+
+                            // 记录到日志
+                            // if local
+                            if (config('app.env') == 'local') {
+                                Log::debug('计费：' . $host->server->name . ' ' . $host->name . ' ' . $traffic . 'GB ' . $cost . ' 的 Drops 消耗');
+                            }
 
                             // 如果计费金额大于 0，则扣费
                             if ($cost > 0) {
