@@ -253,7 +253,7 @@
             <span style="color: red">无法连接到服务器。</span>
             <form action="{{ route('servers.update', $server->id) }}" method="POST">
                 @csrf
-                @method('PATCH')
+                @method('PUT')
                 <input type="hidden" name="status" value="up" />
                 <button type="submit">强制标记为在线</button>
             </form>
@@ -262,7 +262,7 @@
 
             <form action="{{ route('servers.update', $server->id) }}" method="POST">
                 @csrf
-                @method('PATCH')
+                @method('PUT')
                 <input type="hidden" name="status" value="down" />
                 <button type="submit">标记为离线</button>
             </form>
@@ -274,14 +274,14 @@
 
             <form action="{{ route('servers.update', $server->id) }}" method="POST">
                 @csrf
-                @method('PATCH')
+                @method('PUT')
                 <input type="hidden" name="status" value="down" />
                 <button type="submit">取消维护</button>
             </form>
         @else
             <form action="{{ route('servers.update', $server->id) }}" method="POST">
                 @csrf
-                @method('PATCH')
+                @method('PUT')
                 <input type="hidden" name="status" value="maintenance" />
                 <button type="submit">开始维护</button>
             </form>

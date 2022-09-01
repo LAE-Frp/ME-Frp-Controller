@@ -10,7 +10,6 @@
         {{ $server->updated_at->diffForHumans() }}
     </a>
 
-    @php($serverInfo = (object) (new \App\Http\Controllers\FrpController($server->id))->serverInfo())
     <small class="text-muted">
         <p>状态: {{ $server->status }}</p>
         服务器地址: {{ $server->server_address }}, 支持的协议:
@@ -19,9 +18,6 @@
         {{ $server->allow_tcp ? 'TCP' : ' ' }}
         {{ $server->allow_udp ? 'UDP' : ' ' }}
         {{ $server->allow_STCP ? 'STCP' : ' ' }}。
-        <p>客户端数量:{{ $serverInfo->client_counts ?? 0 }},连接数:{{ $serverInfo->cur_conns ?? 0 }},进站流量{{ unitConversion($serverInfo->total_traffic_in ?? 0) }},出站流量{{ unitConversion($serverInfo->total_traffic_out ?? 0) }},
-            {{ $serverInfo->version ?? '离线' }}。
-        </p>
         服务器位于@if ($server->is_china_mainland)
             <span style="color: green">中国大陆</span>
         @else

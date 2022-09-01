@@ -103,11 +103,15 @@ class ServerController extends Controller
 
         // $request->validate($this->rules($server->id));
 
-        $request->merge(['allow_http' => $request->has('allow_http') ? true : false]);
-        $request->merge(['allow_https' => $request->has('allow_https') ? true : false]);
-        $request->merge(['allow_tcp' => $request->has('allow_tcp') ? true : false]);
-        $request->merge(['allow_udp' => $request->has('allow_udp') ? true : false]);
-        $request->merge(['allow_stcp' => $request->has('allow_stcp') ? true : false]);
+
+        if (!$request->has('status')) {
+            $request->merge(['allow_http' => $request->has('allow_http') ? true : false]);
+            $request->merge(['allow_https' => $request->has('allow_https') ? true : false]);
+            $request->merge(['allow_tcp' => $request->has('allow_tcp') ? true : false]);
+            $request->merge(['allow_udp' => $request->has('allow_udp') ? true : false]);
+            $request->merge(['allow_stcp' => $request->has('allow_stcp') ? true : false]);
+
+        }
 
         $data = $request->all();
 
