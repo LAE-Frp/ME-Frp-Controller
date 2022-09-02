@@ -129,7 +129,7 @@ class HostController extends Controller
         $host = $this->http->post('/hosts', [
             'name' => $request->name, // 主机名称，如果为 null 则随机生成。
             'user_id' => $request->user_id,
-            'price' => 10, // 计算的价格
+            'price' => 0, // 计算的价格
             'status' => 'running', // 初始状态
         ])->json();
 
