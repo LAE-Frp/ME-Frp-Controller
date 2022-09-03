@@ -147,7 +147,7 @@ class ServerController extends Controller
             'token' => 'required|max:50',
             'dashboard_port' => 'required|integer|max:65535|min:1',
             'dashboard_user' => 'required|max:20',
-            'dashboard_password' => 'required|max:30',
+            'dashboard_password' => 'required|max:32',
             'allow_http' => 'boolean',
             'allow_https' => 'boolean',
             'allow_tcp' => 'boolean',
