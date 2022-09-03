@@ -62,7 +62,7 @@ class HostController extends Controller
     public function destroy(Host $host)
     {
         // 如果你想要拥有自己的一套删除逻辑，可以不处理这个。返回 false 即可。
-        return false;
+        // return false;
 
 
         // 或者执行 Functions/HostController.php 中的 destroy 方法。
