@@ -9,7 +9,7 @@ use App\Http\Controllers\Remote\Functions;
 /**
  * 远程路由 Remote
  * 这里的路由都会暴露给用户和平台，并且您也必须确保它们都经过 'Remote' 中间件，否则这些路由将不安全。
- * 
+ *
  */
 
 
@@ -29,7 +29,7 @@ Route::apiResource('hosts', Remote\HostController::class)->only(['update', 'dest
  */
 
 // 当前模块的函数。服务器启停，创建，销毁，都需要进过这里。
-Route::group(['prefix' => '/functions'], function () {
+Route::group(['prefix' => '/functions', 'as' => 'functions.'], function () {
     Route::apiResource('hosts', Functions\HostController::class);
     Route::get('servers', Functions\ServerController::class);
 });
