@@ -39,7 +39,7 @@ class Cost implements ShouldQueue
     public function handle()
     {
 
-        Server::with('hosts')->where('status', 'up')->chunk(100, function ($servers) {
+        Server::with('hosts')->where('status', 'up')->where('price_per_gb', 0)->chunk(100, function ($servers) {
             foreach ($servers as $server) {
                 $ServerCheckJob = new ServerCheckJob($server->id);
                 $ServerCheckJob->handle();
