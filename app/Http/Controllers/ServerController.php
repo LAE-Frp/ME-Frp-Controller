@@ -55,9 +55,12 @@ class ServerController extends Controller
         $request_data['allow_udp'] = $request->allow_udp ?? 0;
         $request_data['allow_stcp'] = $request->allow_stcp ?? 0;
 
-        Server::create($request_data);
+        $server = Server::create($request_data);
 
-        return redirect()->route('servers.index')->with('success', '服务器成功添加。');
+        // return to edit
+        return redirect()->route('servers.edit', $server);
+
+        // return redirect()->route('servers.edit',)->with('success', '服务器成功添加。');
     }
 
     /**
