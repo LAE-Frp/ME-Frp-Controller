@@ -59,7 +59,7 @@ class ReviewWebsiteJob implements ShouldQueue
                         continue;
                     }
                 } else {
-                    $url = 'http://' . $host->custom_domain;
+                    $url = $host->protocol + '://' . $host->custom_domain;
 
                     try {
                         $http = Http::timeout(3)->connectTimeout(3)->get($url);
