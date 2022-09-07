@@ -27,12 +27,8 @@ class Kernel extends ConsoleKernel
             (new Cost())->handle();
         })->hourly()->name('FrpServerCost')->withoutOverlapping()->onOneServer();
 
-        $schedule->call(function () {
-            (new ReviewWebsiteJob())->handle();
-        })->hourly()->name('ReviewWebsite')->onOneServer();
-
         // every three days
-        // $schedule->job(new ReviewWebsiteJob())->cron('0 0 */3 * *')->name('reviewWebsiteJob')->withoutOverlapping()->onOneServer();
+        $schedule->job(new ReviewWebsiteJob())->cron('0 0 */3 * *')->name('reviewWebsiteJob')->withoutOverlapping()->onOneServer();
     }
 
     /**
