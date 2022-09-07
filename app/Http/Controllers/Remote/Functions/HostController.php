@@ -142,7 +142,7 @@ class HostController extends Controller
 
 
         // 设置价格
-        $data['price'] = 23.2142;
+        $data['price'] = 0;
 
 
         $data['status'] = 'running';
