@@ -12,21 +12,24 @@
 </head>
 
 <body>
-    @auth
-        <h3 style="text-align: center">{{ config('remote.module_name') }} 后台</h3>
-        {{-- 顶部横向菜单 --}}
-        <div class="top-menu">
-            <ul>
-                <li><a href="/">首页</a></li>
-                <li><a href="{{ route('users.index') }}">已经发现的客户</a></li>
-                {{-- <li><a href="{{ route('products.index') }}">产品</a></li> --}}
-                <li><a href="{{ route('hosts.index') }}">主机</a></li>
-                <li><a href="{{ route('servers.index') }}">服务器</a></li>
-                <li><a href="{{ route('work-orders.index') }}">工单</a></li>
-                <li><a href="{{ route('logout') }}">退出</a></li>
-            </ul>
-        </div>
-    @endauth
+    <div id="top">
+        @auth
+            <h3 style="text-align: center">{{ config('remote.module_name') }} 后台</h3>
+            {{-- 顶部横向菜单 --}}
+            <div class="top-menu">
+                <ul>
+                    <li><a href="/">首页</a></li>
+                    <li><a href="{{ route('users.index') }}">已经发现的客户</a></li>
+                    {{-- <li><a href="{{ route('products.index') }}">产品</a></li> --}}
+                    <li><a href="{{ route('hosts.index') }}">主机</a></li>
+                    <li><a href="{{ route('servers.index') }}">服务器</a></li>
+                    <li><a href="{{ route('work-orders.index') }}">工单</a></li>
+                    <li><a href="{{ route('reviews.next') }}">继续审查</a></li>
+                    <li><a href="{{ route('logout') }}">退出</a></li>
+                </ul>
+            </div>
+        @endauth
+    </div>
     {{-- display error --}}
 
     {{-- if has success --}}

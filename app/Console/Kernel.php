@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Jobs\Cost;
 use App\Http\Controllers\ServerController;
+use App\Jobs\ReviewWebsiteJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,6 +26,13 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             (new Cost())->handle();
         })->hourly()->name('FrpServerCost')->withoutOverlapping()->onOneServer();
+
+        $schedule->call(function () {
+            (new ReviewWebsiteJob())->handle();
+        })->hourly()->name('ReviewWebsite')->onOneServer();
+
+        // every three days
+        // $schedule->job(new ReviewWebsiteJob())->cron('0 0 */3 * *')->name('reviewWebsiteJob')->withoutOverlapping()->onOneServer();
     }
 
     /**
@@ -34,7 +42,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

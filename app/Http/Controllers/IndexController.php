@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Server;
 use Illuminate\Http\Request;
+use App\Jobs\ReviewWebsiteJob;
 use Illuminate\Support\Facades\Auth;
 
 class IndexController extends Controller
@@ -12,6 +13,8 @@ class IndexController extends Controller
 
     public function index()
     {
+
+        // dd((new ReviewWebsiteJob())->handle());
 
         // test cost
         // $handle = new Cost();

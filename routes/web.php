@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HostController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\WorkOrderController;
 use App\Http\Controllers\UserController;
@@ -22,6 +23,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('hosts', HostController::class);
     Route::resource('work-orders', WorkOrderController::class);
     Route::resource('work-orders.replies', ReplyController::class);
+
+
+    Route::get('reviews', [ReviewController::class, 'next'])->name('reviews.next');
+
     // Route::resource('products', ProductController::class);
     // // Route::resource('configurable-options', ConfigurableOptionController::class);
     // Route::resource(

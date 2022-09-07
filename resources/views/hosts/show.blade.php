@@ -1,6 +1,29 @@
 <x-app-layout>
-    <pre id="config">
-</pre>
+
+    @php($cache = Cache::get('frpTunnel_data_' . $host->client_token, []))
+
+    <p> 隧道状态：
+        @if ($cache['status'] ?? false === 'online')
+            <span style="color: green">在线</span>
+        @else
+            <span style="color: red">离线</span>
+        @endif
+    </p>
+
+    <p> 连接数：{{ $cache['cur_conns'] ?? 0 }}</p>
+    <p> 下载流量：{{ unitConversion($cache['today_traffic_in'] ?? 0) }}</p>
+    <p> 上载流量：{{ unitConversion($cache['today_traffic_out'] ?? 0) }}</p>
+
+
+
+
+    {{-- @if ($host->protocol == 'http' || $host->protocol == 'https')
+        <h3>网页截图</h3>
+        <img src="" />
+    @endif --}}
+
+    <h3>配置文件</h3>
+    <pre id="config"></pre>
     <script>
         let tunnel_config = {!! $host !!}
         // let put_config()

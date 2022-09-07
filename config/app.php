@@ -143,6 +143,9 @@ return [
         // 'store'  => 'redis',
     ],
 
+
+    'webdriver_host' => env('WEBDRIVER_HOST', 'http://localhost:4444/'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
