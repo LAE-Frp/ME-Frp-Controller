@@ -37,7 +37,9 @@
         <h3>网页截图</h3>
 
         @if ($host->screenshot_url !== null)
-            <img width="1024px" height="768px" src="{{ $host->screenshot_url }}" alt="网页截图" />
+            <a target="_blank" href="{{ $host->screenshot_url }}">
+                <img width="1024px" src="{{ $host->screenshot_url }}" alt="网页截图" />
+            </a>
         @else
             <p>暂无截图，截图还没有生成，或者此站点可能不是有效的 HTTP 站点。</p>
         @endif
