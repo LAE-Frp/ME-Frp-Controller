@@ -28,12 +28,14 @@ class WorkOrderController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        $req = $request->all();
 
         // find host
-        // $host = Host::where('upstream_id', $request->upstream_id);
+        $host = Host::where('host_id', $request->host_id)->firstOrFail();
 
-        $workOrder = WorkOrder::create($request->all());
+        $req['host_id'] = $host->id;
+
+        $workOrder = WorkOrder::create($req);
 
         return $this->success($workOrder);
     }
@@ -60,7 +62,14 @@ class WorkOrderController extends Controller
     {
         //
 
-        $work_order->update($request->all());
+        $req = $request->all();
+
+        // find host
+        $host = Host::where('host_id', $request->host_id)->firstOrFail();
+
+        $req['host_id'] = $host->id;
+
+        $work_order->update($req);
 
         return $this->updated($work_order);
     }
