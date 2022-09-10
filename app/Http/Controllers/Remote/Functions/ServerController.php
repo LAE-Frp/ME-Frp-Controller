@@ -29,6 +29,8 @@ class ServerController extends Controller
             'status',
 
             'price_per_gb',
+            'free_traffic',
+
             'is_china_mainland'
         ])->get();
 

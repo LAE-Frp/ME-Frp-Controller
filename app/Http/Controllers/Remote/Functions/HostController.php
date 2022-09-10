@@ -441,6 +441,8 @@ EOF;
             'status',
 
             'price_per_gb',
+            'free_traffic',
+
             'is_china_mainland'
         ];
     }
