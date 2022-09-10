@@ -16,6 +16,7 @@ class User extends Authenticatable
         'id',
         'name',
         'email',
+        'free_traffic',
         'created_at',
         'updated_at',
     ];

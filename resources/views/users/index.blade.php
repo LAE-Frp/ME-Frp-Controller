@@ -8,8 +8,9 @@
                 <th>ID</th>
                 <th>名称</th>
                 <th>邮箱</th>
-                <th>发现时间</th>
-                <th>更新时间</th>
+                <th>剩余免费流量</th>
+                {{-- <th>发现时间</th>
+                <th>更新时间</th> --}}
                 {{-- <th>操作</th> --}}
             </tr>
         </thead>
@@ -21,8 +22,10 @@
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
-                    <td>{{ $user->created_at }}</td>
-                    <td>{{ $user->updated_at }}</td>
+                    <td><input type="text" value="{{ $user->free_traffic ?? 0 }}"
+                            onchange="updateTraffic({{ $user->id }}, this)" /> GB</td>
+                    {{-- <td>{{ $user->created_at }}</td>
+                    <td>{{ $user->updated_at }}</td> --}}
                     {{-- <td>
                         <a href="{{ route('user.show', $user) }}">查看</a>
                         <a href="{{ route('user.edit', $user) }}">编辑</a>
@@ -39,4 +42,35 @@
 
 
     {{ $users->links() }}
+
+    <script>
+        function updateTraffic(userId, input) {
+            const url = '/users/' + userId
+            // xml http request
+            const xhr = new XMLHttpRequest();
+            xhr.open('PATCH', url);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            // csrf
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+
+            // not follow redirect
+            xhr.responseType = 'json';
+
+            // add ajax header
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+
+            xhr.send(JSON.stringify({
+                free_traffic: input.value
+            }));
+
+            xhr.onload = function() {
+                if (xhr.status != 200) {
+                    alert(`Error ${xhr.status}: ${xhr.statusText}`);
+                }
+            };
+        }
+    </script>
 </x-app-layout>

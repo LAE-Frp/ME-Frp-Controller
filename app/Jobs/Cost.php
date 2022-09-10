@@ -39,54 +39,98 @@ class Cost implements ShouldQueue
     public function handle()
     {
 
-        Server::with('hosts')->where('status', 'up')->where('price_per_gb', 0)->chunk(100, function ($servers) {
+        Server::with('hosts')->where('status', 'up')->whereNot('price_per_gb', 0)->chunk(100, function ($servers) {
             foreach ($servers as $server) {
-                $ServerCheckJob = new ServerCheckJob($server->id);
-                $ServerCheckJob->handle();
+                Log::debug('ok');
+
+                // $ServerCheckJob = new ServerCheckJob($server->id);
+                // $ServerCheckJob->handle();
 
                 foreach ($server->hosts as $host) {
+                    $host->load('user');
 
                     $cache_key = 'frpTunnel_data_' . $host->client_token;
                     // $tunnel = 'frp_user_' . $host->client_token;
                     // $tunnel_user_id = Cache::get($tunnel);
-                    $tunnel_data = Cache::get($cache_key);
-
-                    // dd($tunnel_data);
+                    $tunnel_data = Cache::get($cache_key, [1, 2, 3]);
 
                     if (!is_null($tunnel_data)) {
-                        $traffic = $tunnel_data['today_traffic_in'] + $tunnel_data['today_traffic_out'];
+                        $traffic = ($tunnel_data['today_traffic_in'] ?? 0) + ($tunnel_data['today_traffic_out'] ?? 0);
 
-                        // 如果今日流量比昨天小，则是新的一天
-                        if ($traffic < $host->last_bytes) {
-                            $host->last_bytes = $traffic;
-                            $host->save();
-                        } else {
+                        // $traffic = 1073741824 * 10;
 
-                            // 免费流量
-                            $free_traffic = $server->free_traffic * 1024 * 1024 * 1024;
+                        Log::debug('本次使用的流量: ' . $traffic);
 
-                            // 要计费的流量
-                            $traffic -= $host->last_bytes;
-                            $host->save();
 
-                            // byte 换算为 GB
-                            $traffic = $traffic / (1024 * 1024 * 1024);
+                        $day = date('d');
 
-                            // 如果流量大于免费流量
-                            if ($traffic > $free_traffic) {
-                                $traffic -= $free_traffic;
-                                $traffic = round($traffic, 2);
+                        $traffic_key = 'traffic_day_' . $day . '_used_' . $host->id;
 
-                                $cost = $traffic * $host->server->price_per_gb;
+                        $used_traffic = Cache::get($traffic_key, 0);
+                        if ($used_traffic !== $traffic) {
+                            // 保存 1 天
+                            Cache::put($traffic_key, $traffic, 60 * 24);
+
+                            Log::debug('上次使用的流量: ' . $used_traffic);
+
+                            $used_traffic = $traffic - $used_traffic;
+                        }
+
+                        if ($host->user->free_traffic > 0) {
+                            $user_free_traffic = $host->user->free_traffic * 1024 * 1024 * 1024;
+
+                            Log::debug('用户免费流量: ' . $user_free_traffic);
+
+                            $used_traffic -= $user_free_traffic;
+
+                            $used_traffic = abs($used_traffic);
+
+                            // 获取剩余
+                            $left_traffic = $user_free_traffic - $used_traffic;
+
+                            Log::debug('计算后剩余的免费流量: ' . $left_traffic);
+
+                            // 保存
+
+                            if ($left_traffic < 0) {
+                                $left_traffic = 0;
                             }
 
+                            $host->user->free_traffic = $left_traffic / 1024 / 1024 / 1024;
+                            $host->user->save();
+
+                            Log::debug('user left free_traffic: ' . $left_traffic);
+                        }
+
+                        Log::debug('实际用量:' . $used_traffic);
+
+
+                        // $used_traffic -= $server->free_traffic * 1024 * 1024 * 1024;
+                        // // $used_traffic = abs($used_traffic);
+
+                        // Log::debug('服务器免费流量: ' . $server->free_traffic * 1024 * 1024 * 1024);
+
+                        // Log::debug('使用的流量（减去服务器免费流量）: ' . $used_traffic);
+
+
+                        if ($used_traffic > 0) {
+                            // 要计费的流量
+                            $traffic = $used_traffic / (1024 * 1024 * 1024);
+
+                            $traffic = abs($traffic);
+
+                            $gb = ceil($traffic);
+
                             // 计算价格
+                            $cost = $traffic * $host->server->price_per_gb;
+                            $cost = abs($cost);
 
                             // 记录到日志
                             // if local
                             if (config('app.env') == 'local') {
-                                Log::debug('计费：' . $host->server->name . ' ' . $host->name . ' ' . $traffic . 'GB ' . $cost . ' 的 Drops 消耗');
+                                Log::debug('计费：' . $host->server->name . ' ' . $host->name . ' ' . $gb . 'GB ' . $cost . ' 的 Drops 消耗');
                             }
+
 
                             // 如果计费金额大于 0，则扣费
                             if ($cost > 0) {

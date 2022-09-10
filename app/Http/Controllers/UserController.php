@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -68,12 +67,23 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  User $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
         //
+        $user->update($request->all());
+
+        // if not ajax
+        if ($request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => '更新成功',
+            ]);
+        } else {
+            return redirect()->route('users.index');
+        }
     }
 
     /**
