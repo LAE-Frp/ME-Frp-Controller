@@ -67,6 +67,7 @@ class Cost implements ShouldQueue
 
                             // 要计费的流量
                             $traffic -= $host->last_bytes;
+                            $host->save();
 
                             // byte 换算为 GB
                             $traffic = $traffic / (1024 * 1024 * 1024);
