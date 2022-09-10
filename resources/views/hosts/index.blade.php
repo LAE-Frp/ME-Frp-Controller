@@ -32,7 +32,7 @@
                     <td>{{ $host->user->name }}</td>
                     <td>{{ $host->price }}</td>
                     <td>{{ $host->status }}</td>
-                    @php($cache = Cache::get('frpTunnel_data_' . $host->client_token, []))
+                    @php($cache = Cache::get('frpTunnel_data_' . $host->client_token, ['status' => 'offline']))
                     <td>{{ strtoupper($host->protocol) }}</td>
                     <td>{{ $host->local_address }}</td>
 
@@ -49,7 +49,7 @@
                     <td><a href="{{ route('servers.show', $host->server->id) }}">{{ $host->server->name }}</a></td>
 
                     <td>
-                        @if ($cache['status'] ?? false === 'online')
+                        @if ($cache['status'] === 'online')
                             <span class="text-success">在线</span>
                         @else
                             <span class="text-danger">离线</span>

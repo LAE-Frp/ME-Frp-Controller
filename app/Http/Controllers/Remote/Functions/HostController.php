@@ -319,13 +319,14 @@ EOF;
 
         if ($request->reset_token) {
             $cache_key = 'frpTunnel_data_' . $host->client_token;
-            $tunnel_data = Cache::has($cache_key);
+            $tunnel_data = Cache::get($cache_key);
 
-            if ($tunnel_data) {
+
+            if (isset($tunnel_data['status']) && $tunnel_data['status'] == 'online') {
                 return $this->forbidden('请先关闭客户端连接后，等待大约 10 分钟左右再重置。');
-            } else {
-                $request_data['client_token'] = Str::random(51);
             }
+
+            $request_data['client_token'] = Str::random(51);
         }
 
         if ($request->has('local_address')) {
@@ -378,7 +379,7 @@ EOF;
         // ]);
 
         $cache_key = 'frpTunnel_data_' . $host->client_token;
-        $tunnel_data = Cache::has($cache_key);
+        $tunnel_data = Cache::get($cache_key);
 
         if (isset($tunnel_data['status'])) {
             if ($tunnel_data['status'] == 'online') {
