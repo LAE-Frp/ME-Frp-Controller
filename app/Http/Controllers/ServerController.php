@@ -19,7 +19,8 @@ class ServerController extends Controller
     public function index()
     {
         //
-        $servers = Server::simplePaginate(10);
+        $servers = Server::get();
+        // $servers = Server::simplePaginate(10);
 
         return view('servers.index', compact('servers'));
     }
