@@ -32,4 +32,5 @@ Route::apiResource('hosts', Remote\HostController::class)->only(['update', 'dest
 Route::group(['prefix' => '/functions', 'as' => 'functions.'], function () {
     Route::apiResource('hosts', Functions\HostController::class);
     Route::get('servers', Functions\ServerController::class);
+    Route::get('traffics', Functions\TrafficController::class);
 });

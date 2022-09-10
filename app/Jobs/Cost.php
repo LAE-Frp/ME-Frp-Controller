@@ -41,8 +41,6 @@ class Cost implements ShouldQueue
 
         Server::with('hosts')->where('status', 'up')->whereNot('price_per_gb', 0)->chunk(100, function ($servers) {
             foreach ($servers as $server) {
-                Log::debug('ok');
-
                 // $ServerCheckJob = new ServerCheckJob($server->id);
                 // $ServerCheckJob->handle();
 
@@ -52,7 +50,7 @@ class Cost implements ShouldQueue
                     $cache_key = 'frpTunnel_data_' . $host->client_token;
                     // $tunnel = 'frp_user_' . $host->client_token;
                     // $tunnel_user_id = Cache::get($tunnel);
-                    $tunnel_data = Cache::get($cache_key, [1, 2, 3]);
+                    $tunnel_data = Cache::get($cache_key, null);
 
                     if (!is_null($tunnel_data)) {
                         $traffic = ($tunnel_data['today_traffic_in'] ?? 0) + ($tunnel_data['today_traffic_out'] ?? 0);
