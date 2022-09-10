@@ -115,6 +115,16 @@
                     </div>
                 </div>
 
+                <p>免费流量：单位 GB</p>
+                <div class="row">
+                    <div class="col-auto">
+                        <div class="input-group input-group-sm mb-3">
+                            <input type="text" value="1" required class="form-control"
+                                placeholder="免费流量（单位 GB）" name="free_traffic">
+                        </div>
+                    </div>
+                </div>
+
                 <p>服务器是否位于中国大陆</p>
                 <div class="row">
                     <div class="col-auto">

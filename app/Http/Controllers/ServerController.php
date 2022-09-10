@@ -54,6 +54,7 @@ class ServerController extends Controller
         $request_data['allow_tcp'] = $request->allow_tcp ?? 0;
         $request_data['allow_udp'] = $request->allow_udp ?? 0;
         $request_data['allow_stcp'] = $request->allow_stcp ?? 0;
+        $request_data['is_china_mainland'] = $request->is_china_mainland ?? 0;
 
         $server = Server::create($request_data);
 
@@ -113,6 +114,8 @@ class ServerController extends Controller
             $request->merge(['allow_tcp' => $request->has('allow_tcp') ? true : false]);
             $request->merge(['allow_udp' => $request->has('allow_udp') ? true : false]);
             $request->merge(['allow_stcp' => $request->has('allow_stcp') ? true : false]);
+            $request->merge(['allow_stcp' => $request->has('allow_stcp') ? true : false]);
+            $request->merge(['is_china_mainland' => $request->has('is_china_mainland') ? true : false]);
 
         }
 

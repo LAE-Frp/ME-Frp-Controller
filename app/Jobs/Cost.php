@@ -62,14 +62,24 @@ class Cost implements ShouldQueue
                             $host->save();
                         } else {
 
+                            // 免费流量
+                            $free_traffic = $server->free_traffic * 1024 * 1024 * 1024;
+
                             // 要计费的流量
                             $traffic -= $host->last_bytes;
 
                             // byte 换算为 GB
                             $traffic = $traffic / (1024 * 1024 * 1024);
 
+                            // 如果流量大于免费流量
+                            if ($traffic > $free_traffic) {
+                                $traffic -= $free_traffic;
+                                $traffic = round($traffic, 2);
+
+                                $cost = $traffic * $host->server->price_per_gb;
+                            }
+
                             // 计算价格
-                            $cost = $traffic * $host->server->price_per_gb;
 
                             // 记录到日志
                             // if local
