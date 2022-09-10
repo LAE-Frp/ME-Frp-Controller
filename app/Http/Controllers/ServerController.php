@@ -171,8 +171,7 @@ class ServerController extends Controller
     {
         if (is_null($id)) {
             // refresh all
-            $servers = Server::all();
-            Server::chunk(100, function () use ($servers) {
+            Server::chunk(100, function ($servers) {
                 foreach ($servers as $server) {
                     dispatch(new ServerCheckJob($server->id));
                 }
