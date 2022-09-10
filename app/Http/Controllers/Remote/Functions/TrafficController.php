@@ -16,7 +16,7 @@ class TrafficController extends Controller
         $user = User::find($request->user_id);
 
         return $this->success([
-            'free_traffic' => $user->free_traffic,
+            'free_traffic' => $user->free_traffic ?? 0,
         ]);
     }
 }
