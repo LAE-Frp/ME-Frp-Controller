@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Host;
 use App\Models\Server;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PortManagerController extends Controller
 {
@@ -66,6 +67,9 @@ class PortManagerController extends Controller
         // cache
         // $cache_key = 'frp_user_' . $request->content['proxy_name'];
         // Cache::put($cache_key, $host->user_id);
+
+        $cache_key = 'frpTunnel_data_' . $host->client_token;
+        Cache::put($cache_key, ['status' => 'online']);
 
         return $this->frpSuccess();
     }
