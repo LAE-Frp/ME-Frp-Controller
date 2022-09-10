@@ -380,10 +380,11 @@ EOF;
         $cache_key = 'frpTunnel_data_' . $host->client_token;
         $tunnel_data = Cache::has($cache_key);
 
-        if ($tunnel_data) {
-            return $this->forbidden('请先关闭客户端连接后，等待大约 10 分钟左右再删除。');
+        if (isset($tunnel_data['status'])) {
+            if ($tunnel_data['status'] == 'online') {
+                return $this->forbidden('请先关闭客户端连接后，等待大约 10 分钟左右再删除。');
+            }
         }
-
 
         $host->load('server');
         $host->server->decrement('tunnels');
