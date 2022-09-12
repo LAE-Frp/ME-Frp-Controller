@@ -47,6 +47,11 @@ class Cost implements ShouldQueue
                 foreach ($server->hosts as $host) {
                     $host->load('user');
 
+                    Log::debug('------------');
+                    Log::debug('主机', $host->name);
+                    Log::debug('属于用户', $host->user->name);
+
+
                     $cache_key = 'frpTunnel_data_' . $host->client_token;
                     // $tunnel = 'frp_user_' . $host->client_token;
                     // $tunnel_user_id = Cache::get($tunnel);
