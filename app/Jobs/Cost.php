@@ -77,8 +77,11 @@ class Cost implements ShouldQueue
                             $used_traffic_gb = $used_traffic / 1024 / 1024 / 1024;
 
                             Log::debug('上次使用的流量: ' . $used_traffic);
+                            Log::debug('上次使用的流量 GB: ' . $used_traffic_gb);
 
                             $used_traffic = $traffic - $used_traffic;
+
+                            Log::debug('流量差值: ' . $used_traffic);
                         }
 
                         if ($host->user->free_traffic > 0) {
