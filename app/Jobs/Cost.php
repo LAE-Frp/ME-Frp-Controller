@@ -48,8 +48,8 @@ class Cost implements ShouldQueue
                     $host->load('user');
 
                     Log::debug('------------');
-                    Log::debug('主机', $host->name);
-                    Log::debug('属于用户', $host->user->name);
+                    Log::debug('主机: ' . $host->name);
+                    Log::debug('属于用户: ' . $host->user->name);
 
 
                     $cache_key = 'frpTunnel_data_' . $host->client_token;
@@ -120,7 +120,7 @@ class Cost implements ShouldQueue
 
                         if ($used_traffic > 0) {
 
-                            Log::debug('此时 used_traffic', $used_traffic);
+                            Log::debug('此时 used_traffic: ' . $used_traffic);
 
                             // 要计费的流量
                             $traffic = $used_traffic / (1024 * 1024 * 1024);
