@@ -24,4 +24,17 @@ class User extends Authenticatable
     // disable auto increment
     public $incrementing = false;
     public $timestamps = true;
+
+
+    // when update
+    public static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($model) {
+            if ($model->free_traffic == null) {
+                $model->free_traffic = 0;
+            }
+        });
+    }
 }
