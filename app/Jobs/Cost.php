@@ -88,7 +88,7 @@ class Cost implements ShouldQueue
 
                         if ($host->user->free_traffic > 0) {
 
-                            Log::debug('开始扣除免费流量时的 used_traffic: ' . $used_traffic);
+                            Log::debug('开始扣除免费流量时的 used_traffic: ' . $used_traffic / 1024 / 1024 / 1024);
 
                             $user_free_traffic = $host->user->free_traffic * 1024 * 1024 * 1024;
 
