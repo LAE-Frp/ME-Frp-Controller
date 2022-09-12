@@ -74,6 +74,8 @@ class Cost implements ShouldQueue
                             // 保存 1 天
                             Cache::put($traffic_key, $traffic, 60 * 24);
 
+                            $used_traffic_gb = $used_traffic / 1024 / 1024 / 1024;
+
                             Log::debug('上次使用的流量: ' . $used_traffic);
 
                             $used_traffic = $traffic - $used_traffic;
@@ -117,6 +119,9 @@ class Cost implements ShouldQueue
 
 
                         if ($used_traffic > 0) {
+
+                            Log::debug('此时 used_traffic', $used_traffic);
+
                             // 要计费的流量
                             $traffic = $used_traffic / (1024 * 1024 * 1024);
 
