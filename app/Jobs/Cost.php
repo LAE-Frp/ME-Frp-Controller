@@ -85,13 +85,18 @@ class Cost implements ShouldQueue
                         }
 
                         if ($host->user->free_traffic > 0) {
+
+                            Log::debug('开始扣除免费流量时的 used_traffic: ' . $used_traffic);
+
                             $user_free_traffic = $host->user->free_traffic * 1024 * 1024 * 1024;
 
                             Log::debug('用户免费流量: ' . $user_free_traffic);
 
-                            $used_traffic -= $user_free_traffic;
+                            // $used_traffic -= $user_free_traffic;
+                            // $used_traffic = abs($used_traffic);
 
-                            $used_traffic = abs($used_traffic);
+
+                            Log::debug('扣除免费流量时的 used_traffic: ' . $used_traffic);
 
                             // 获取剩余
                             $left_traffic = $user_free_traffic - $used_traffic;
@@ -106,9 +111,9 @@ class Cost implements ShouldQueue
 
                             $host->user->free_traffic = $left_traffic / 1024 / 1024 / 1024;
                             $host->user->save();
-
-                            Log::debug('user left free_traffic: ' . $left_traffic);
                         }
+
+                        $used_traffic = abs($used_traffic);
 
                         Log::debug('实际用量:' . $used_traffic);
 
