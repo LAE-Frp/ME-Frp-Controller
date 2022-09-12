@@ -62,7 +62,7 @@ class Cost implements ShouldQueue
 
                         // $traffic = 1073741824 * 10;
 
-                        Log::debug('本次使用的流量: ' . $traffic);
+                        Log::debug('本次使用的流量: ' . $traffic / 1024 / 1024 / 1024);
 
 
                         $day = date('d');
@@ -76,12 +76,12 @@ class Cost implements ShouldQueue
 
                             $used_traffic_gb = $used_traffic / 1024 / 1024 / 1024;
 
-                            Log::debug('上次使用的流量: ' . $used_traffic);
+                            // Log::debug('上次使用的流量: ' . $used_traffic);
                             Log::debug('上次使用的流量 GB: ' . $used_traffic_gb);
 
                             $used_traffic = $traffic - $used_traffic;
 
-                            Log::debug('流量差值: ' . $used_traffic);
+                            Log::debug('流量差值: ' . $used_traffic / 1024 / 1024 / 1024);
                         }
 
                         $left_traffic = 0;
@@ -92,18 +92,18 @@ class Cost implements ShouldQueue
 
                             $user_free_traffic = $host->user->free_traffic * 1024 * 1024 * 1024;
 
-                            Log::debug('用户免费流量: ' . $user_free_traffic);
+                            Log::debug('用户免费流量: ' . $user_free_traffic / 1024 / 1024 / 1024);
 
                             // $used_traffic -= $user_free_traffic;
                             // $used_traffic = abs($used_traffic);
 
 
-                            Log::debug('扣除免费流量时的 used_traffic: ' . $used_traffic);
+                            Log::debug('扣除免费流量时的 used_traffic: ' . $used_traffic / 1024 / 1024 / 1024);
 
                             // 获取剩余
                             $left_traffic = $user_free_traffic - $used_traffic;
 
-                            Log::debug('计算后剩余的免费流量: ' . $left_traffic);
+                            Log::debug('计算后剩余的免费流量: ' . $left_traffic / 1024 / 1024 / 1024);
 
                             // 保存
 
@@ -117,7 +117,7 @@ class Cost implements ShouldQueue
 
                         $used_traffic = abs($used_traffic);
 
-                        Log::debug('实际用量:' . $used_traffic);
+                        Log::debug('实际用量:' . $used_traffic  / 1024 / 1024 / 1024);
 
 
                         // $used_traffic -= $server->free_traffic * 1024 * 1024 * 1024;
