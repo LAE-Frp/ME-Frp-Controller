@@ -43,8 +43,8 @@ class Remote
 
         // created_at and updated_at 序列化
         $request->merge([
-            'created_at' => Carbon::parse($request->created_at)->toDateTimeString(),
-            'updated_at' => Carbon::parse($request->updated_at)->toDateTimeString(),
+            'created_at' => Carbon::parse($request->created_at ?? now())->toDateTimeString(),
+            'updated_at' => Carbon::parse($request->updated_at ?? now())->toDateTimeString(),
         ]);
 
 
