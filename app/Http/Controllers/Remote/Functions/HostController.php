@@ -4,15 +4,12 @@ namespace App\Http\Controllers\Remote\Functions;
 
 use App\Models\Host;
 use App\Models\Server;
-use App\Models\Tunnel;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\FrpController;
 use Illuminate\Support\Arr;
-use Ramsey\Uuid\Rfc4122\UuidV4;
 
 class HostController extends Controller
 {
@@ -23,7 +20,6 @@ class HostController extends Controller
             $query->select($this->filter());
         });
 
-
         // if has server_id
         if ($request->server_id) {
             $hosts->where('server_id', $request->server_id);
@@ -31,11 +27,17 @@ class HostController extends Controller
 
         $hosts = $hosts->get();
 
-
         // 将所有 id 改为 host_id
         foreach ($hosts as $host) {
             $host->id = $host->host_id;
         }
+
+        if ($request->with_config == 1) {
+            foreach ($hosts as $host) {
+                $host->config = $this->generateConfig($host);
+            }
+        }
+
 
         return $this->success($hosts);
     }
@@ -220,32 +222,7 @@ class HostController extends Controller
         $host->traffic = $traffic;
         $host->tunnel = $tunnel;
 
-        $host->load('server');
-
-        // 配置文件
-        $config = [];
-
-        $config['server'] = <<<EOF
-[common]
-server_addr = {$host->server->server_address}
-server_port = {$host->server->server_port}
-token = {$host->server->token}
-EOF;
-
-        $local_addr = explode(':', $host->local_address);
-        $config['client'] = <<<EOF
-[{$host->client_token}]
-type = {$host->protocol}
-local_ip = {$local_addr[0]}
-local_port = {$local_addr[1]}
-EOF;
-
-        if ($host->protocol == 'tcp' || $host->protocol == 'udp') {
-            $config['client'] .= PHP_EOL . 'remote_port = ' . $host->remote_port;
-        } else if ($host->protocol == 'http' || $host->protocol == 'https') {
-            $config['client'] .= PHP_EOL . 'custom_domains = ' . $host->custom_domain . PHP_EOL;
-        }
-
+        $config = $this->generateConfig($host);
 
         $host = $host->toArray();
 
@@ -455,5 +432,38 @@ EOF;
 
             'is_china_mainland'
         ];
+    }
+
+
+
+    public function generateConfig(Host $host)
+    {
+        $host->load('server');
+
+        // 配置文件
+        $config = [];
+
+        $config['server'] = <<<EOF
+[common]
+server_addr = {$host->server->server_address}
+server_port = {$host->server->server_port}
+token = {$host->server->token}
+EOF;
+
+        $local_addr = explode(':', $host->local_address);
+        $config['client'] = <<<EOF
+[{$host->client_token}]
+type = {$host->protocol}
+local_ip = {$local_addr[0]}
+local_port = {$local_addr[1]}
+EOF;
+
+        if ($host->protocol == 'tcp' || $host->protocol == 'udp') {
+            $config['client'] .= PHP_EOL . 'remote_port = ' . $host->remote_port;
+        } else if ($host->protocol == 'http' || $host->protocol == 'https') {
+            $config['client'] .= PHP_EOL . 'custom_domains = ' . $host->custom_domain . PHP_EOL;
+        }
+
+        return $config;
     }
 }
