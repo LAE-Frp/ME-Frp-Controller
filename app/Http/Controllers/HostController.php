@@ -17,7 +17,7 @@ class HostController extends Controller
     public function index()
     {
         //
-        $hosts = Host::with('user')->simplePaginate(10);
+        $hosts = Host::with('user')->simplePaginate(100);
 
         return view('hosts.index', compact('hosts'));
     }
