@@ -230,7 +230,7 @@ class ServerController extends Controller
 
             $cache_key = 'frpTunnel_data_' . $proxy['name'];
 
-            Cache::put($cache_key, $proxy, 90);
+            Cache::put($cache_key, $proxy, 60 * 48);
         }
     }
 
