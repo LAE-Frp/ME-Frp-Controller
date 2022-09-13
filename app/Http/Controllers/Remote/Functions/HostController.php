@@ -21,7 +21,15 @@ class HostController extends Controller
         // dd($request);
         $hosts = Host::thisUser()->with('server', function ($query) {
             $query->select($this->filter());
-        })->get();
+        });
+
+
+        // if has server_id
+        if ($request->server_id) {
+            $hosts->where('server_id', $request->server_id);
+        }
+
+        $hosts = $hosts->get();
 
 
         // 将所有 id 改为 host_id
