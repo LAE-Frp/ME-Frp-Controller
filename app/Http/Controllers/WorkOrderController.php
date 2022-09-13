@@ -73,7 +73,7 @@ class WorkOrderController extends Controller
             return back()->with('success', '工单状态已更新，请等待同步。');
         }
 
-        $work_order->load(['replies', 'user']);
+        $work_order->load(['replies', 'user', 'host']);
         //
 
         $user = $work_order->user;
@@ -102,7 +102,7 @@ class WorkOrderController extends Controller
      */
     public function update(Request $request, WorkOrder $work_order)
     {
-    //   
+    //
     }
 
     /**
