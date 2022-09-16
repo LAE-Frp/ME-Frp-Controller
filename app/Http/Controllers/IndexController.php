@@ -28,7 +28,27 @@ class IndexController extends Controller
 
             $servers = Server::where('status', '!=', 'up')->get();
 
-            return view('index', compact('servers'));
+            $module = $this->http->get('modules')->json()['data'];
+
+            $total = $module['transactions']['this_month']['balance'];
+
+            $drops = $module['transactions']['this_month']['drops'] / $module['rate'];
+
+            if ($drops < 0) {
+                $drops = 0;
+            }
+
+            $total += $drops;
+
+            $total = round($total, 2);
+
+            $module = [
+                'balance' => $module['transactions']['this_month']['balance'],
+                'drops' => $module['transactions']['this_month']['drops'],
+                'total' => $total,
+            ];
+
+            return view('index', compact('servers', 'module'));
         }
     }
 
