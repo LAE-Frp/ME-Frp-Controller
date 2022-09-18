@@ -72,7 +72,7 @@ class Cost implements ShouldQueue
                         $used_traffic = Cache::get($traffic_key, 0);
                         if ($used_traffic !== $traffic) {
                             // 保存 2 天
-                            Cache::put($traffic_key, $traffic, 60 * 48);
+                            Cache::put($traffic_key, $traffic, 86400);
 
                             $used_traffic_gb = $used_traffic / 1024 / 1024 / 1024;
 
