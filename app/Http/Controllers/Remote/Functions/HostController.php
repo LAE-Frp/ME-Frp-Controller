@@ -91,9 +91,17 @@ class HostController extends Controller
 
             $data['remote_port'] = null;
 
+            // 检测 域名格式 是否正确
+            // ^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$
+            if (!preg_match('/^(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/', $request->custom_domain)) {
+                return $this->error('域名格式不正确。');
+            }
+
             $request->validate([
                 "custom_domain" => 'required|unique:hosts,custom_domain',
             ]);
+
+
 
             $data['custom_domain'] = Str::lower($request->custom_domain);
 
