@@ -44,14 +44,21 @@ class ReviewWebsiteJob implements ShouldQueue
             foreach ($hosts as $host) {
                 // if protocol is tcp
                 if ($host->protocol == 'tcp') {
+
+                    if ($this->getMark($host->id, 'not_http')) {
+                        continue;
+                    }
                     // 检测是不是 HTTP 服务
                     $url = 'http://' . $host->server->server_address . ':' . $host->remote_port;
 
+                    $this->print('正在检测 TCP: ' . $url);
                     try {
                         $http = Http::timeout(3)->connectTimeout(3)->throw()->get($url);
 
                         // if successful
                         if ($http->successful()) {
+                            $this->print('连接成功。');
+
                             $this->takeScreenshot($host->id, $url);
                         }
                     } catch (Exception) {
@@ -77,8 +84,15 @@ class ReviewWebsiteJob implements ShouldQueue
         });
     }
 
+    private function print($msg)
+    {
+        echo $msg . PHP_EOL;
+    }
+
     private function takeScreenshot($host_id, $url)
     {
+        $this->print('正在拉取屏幕截图: ' . $url);
+
         $chromeOptions = new ChromeOptions();
         $chromeOptions->addArguments([
             '--headless', '--sandbox', '--window-size=1024,768', '--ignore-certificate-errors'
@@ -134,5 +148,9 @@ class ReviewWebsiteJob implements ShouldQueue
     public function mark($host_id, $status)
     {
         Cache::put('host_review_' . $host_id, $status, now()->addDays(7));
+    }
+
+    public function getMark($host_id, $status) {
+        return Cache::get('host_review_' . $host_id, null) === $status ? $status : 'success';
     }
 }
