@@ -22,6 +22,9 @@ class ReviewWebsiteJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+
+    private $http;
+
     /**
      * Create a new job instance.
      *
@@ -30,6 +33,8 @@ class ReviewWebsiteJob implements ShouldQueue
     public function __construct()
     {
         //
+
+        $this->http = Http::remote('remote')->asForm();
     }
 
     /**
@@ -41,9 +46,8 @@ class ReviewWebsiteJob implements ShouldQueue
     {
         //
 
-        $http = Http::remote('remote')->asForm();
 
-        Host::with('server')->where('status', 'running')->whereIn('protocol', ['http', 'https', 'tcp'])->chunk(100, function ($hosts) use ($http) {
+        Host::with('server')->where('status', 'running')->whereIn('protocol', ['http', 'https', 'tcp'])->chunk(100, function ($hosts) {
             foreach ($hosts as $host) {
                 // if protocol is tcp
                 if ($host->protocol == 'tcp') {
@@ -52,12 +56,13 @@ class ReviewWebsiteJob implements ShouldQueue
                     //     continue;
                     // }
                     // 检测是不是 HTTP 服务
-                    $url = 'http://' . $host->server->server_address . ':' . $host->remote_port;
-
-                    $this->print('正在检测 TCP: ' . $url);
 
                     // if is is_china_mainland
                     if ($host->server->is_china_mainland) {
+                        $url = 'http://' . $host->server->server_address . ':' . $host->remote_port;
+
+                        $this->print('正在检测 TCP: ' . $url);
+
                         try {
                             $http = Http::timeout(3)->connectTimeout(3)->get($url);
 
@@ -73,15 +78,33 @@ class ReviewWebsiteJob implements ShouldQueue
                                 // $host->protocol = 'http';
                                 // $host->save();
                             }
-
-
                         } catch (Exception) {
                             continue;
                         }
                     }
-
                 } else {
                     $url = $host->protocol . '://' . $host->custom_domain;
+
+                    $this->print('正在检测 URL : ' . $url);
+                    // 检测 CNAME 或 A 记录
+                    $this->print('正在检测 CNAME 或 A 记录: ' . $host->custom_domain);
+
+                    // 检测 DNS
+                    $dns = dns_get_record($host->custom_domain, DNS_CNAME | DNS_A);
+
+                    if (!$dns) {
+                        $this->print('因为 ' . $host->custom_domain . ' 没有解析，所以暂停了隧道。');
+
+                        $this->http->patch('hosts/' . $host->host_id, [
+                            'status' => 'suspended',
+                        ]);
+
+                        continue;
+                    }
+
+
+                    $this->print('检测到 CNAME 或 A 记录: ' . $host->custom_domain);
+                    $this->print('类型 ' . $dns[0]['type'] . ' 指向 ' . $dns[0]['ip']);
 
                     try {
                         $http = Http::timeout(3)->connectTimeout(3)->get($url);
