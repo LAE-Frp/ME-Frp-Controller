@@ -111,7 +111,10 @@ class Cost implements ShouldQueue
                                 $left_traffic = 0;
                             }
 
-                            $host->user->free_traffic = $left_traffic / 1024 / 1024 / 1024;
+                            // 保留两位小数
+                            $left_traffic = round($left_traffic / 1024 / 1024 / 1024, 2);
+
+                            $host->user->free_traffic = $left_traffic;
                             $host->user->save();
                         }
 
