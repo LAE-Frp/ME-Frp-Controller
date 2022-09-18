@@ -34,6 +34,14 @@
             <button type="submit">删除</button>
         </form>
 
+        <form action="{{ route('hosts.update', $host->host_id) }}" method="POST">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="status" value="suspended" />
+            <button type="submit">暂停</button>
+        </form>
+
+
         <h3>网页截图</h3>
 
         @if ($host->screenshot_url !== null)

@@ -40,31 +40,46 @@ class ReviewWebsiteJob implements ShouldQueue
     public function handle()
     {
         //
-        Host::with('server')->whereIn('protocol', ['http', 'https', 'tcp'])->chunk(100, function ($hosts) {
+
+        $http = Http::remote('remote')->asForm();
+
+        Host::with('server')->where('status', 'running')->whereIn('protocol', ['http', 'https', 'tcp'])->chunk(100, function ($hosts) use ($http) {
             foreach ($hosts as $host) {
                 // if protocol is tcp
                 if ($host->protocol == 'tcp') {
 
-                    if ($this->getMark($host->id, 'not_http')) {
-                        continue;
-                    }
+                    // if ($this->getMark($host->id, 'not_http')) {
+                    //     continue;
+                    // }
                     // 检测是不是 HTTP 服务
                     $url = 'http://' . $host->server->server_address . ':' . $host->remote_port;
 
                     $this->print('正在检测 TCP: ' . $url);
-                    try {
-                        $http = Http::timeout(3)->connectTimeout(3)->throw()->get($url);
 
-                        // if successful
-                        if ($http->successful()) {
-                            $this->print('连接成功。');
+                    // if is is_china_mainland
+                    if ($host->server->is_china_mainland) {
+                        try {
+                            $http = Http::timeout(3)->connectTimeout(3)->get($url);
 
-                            $this->takeScreenshot($host->id, $url);
+                            // if header include text/html
+                            if (strpos($http->header('Content-Type'), 'text/html') !== false) {
+                                $this->print('检测到 TCP: ' . $url . ' 是 HTTP 服务');
+
+                                $this->http->patch('hosts/' . $host->host_id, [
+                                    'status' => 'suspended',
+                                ]);
+
+                                // $host->delete();
+                                // $host->protocol = 'http';
+                                // $host->save();
+                            }
+
+
+                        } catch (Exception) {
+                            continue;
                         }
-                    } catch (Exception) {
-                        $this->mark($host->id, 'not_http');
-                        continue;
                     }
+
                 } else {
                     $url = $host->protocol . '://' . $host->custom_domain;
 
@@ -76,7 +91,6 @@ class ReviewWebsiteJob implements ShouldQueue
                             $this->takeScreenshot($host->id, $url);
                         }
                     } catch (Exception) {
-                        $this->mark($host->id, 'request_failed');
                         continue;
                     }
                 }
@@ -107,7 +121,7 @@ class ReviewWebsiteJob implements ShouldQueue
         // if has alert, accept
         try {
             $driver->switchTo()->alert()->accept();
-        } catch (Exception $e) {
+        } catch (Exception) {
             // no alert
         }
 
@@ -141,16 +155,17 @@ class ReviewWebsiteJob implements ShouldQueue
         Storage::disk('public')->put('reviews/' . $today . '/screenshots/' . $host_id . '.png', $screenshotData);
         Storage::disk('public')->put('reviews/' . $today . '/contents/' . $host_id . '.txt', $webContent);
 
-        $this->mark($host_id, 'success');
+        // $this->mark($host_id, 'success');
     }
 
 
-    public function mark($host_id, $status)
-    {
-        Cache::put('host_review_' . $host_id, $status, now()->addDays(7));
-    }
+    // public function mark($host_id, $status)
+    // {
+    //     Cache::put('host_review_' . $host_id, $status, now()->addDays(7));
+    // }
 
-    public function getMark($host_id, $status) {
-        return Cache::get('host_review_' . $host_id, null) === $status ? $status : 'success';
-    }
+    // public function getMark($host_id, $status)
+    // {
+    //     return Cache::get('host_review_' . $host_id, null) === $status ? $status : 'success';
+    // }
 }
