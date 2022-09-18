@@ -80,13 +80,29 @@ class ReviewWebsiteJob implements ShouldQueue
     private function takeScreenshot($host_id, $url)
     {
         $chromeOptions = new ChromeOptions();
-        $chromeOptions->addArguments(['--headless', '--window-size=1024,768']);
+        $chromeOptions->addArguments([
+            '--headless', '--sandbox', '--window-size=1024,768', '--ignore-certificate-errors'
+        ]);
 
         $capabilities = DesiredCapabilities::chrome();
         $capabilities->setCapability(ChromeOptions::CAPABILITY_W3C, $chromeOptions);
         $driver = RemoteWebDriver::create(config('app.webdriver_host'), $capabilities);
 
         $driver->get($url);
+
+        // if has alert, accept
+        try {
+            $driver->switchTo()->alert()->accept();
+        } catch (Exception $e) {
+            // no alert
+        }
+
+        // wait page
+        $driver->wait(10, 1000)->until(
+            function () use ($driver) {
+                return $driver->executeScript('return document.readyState') == 'complete';
+            }
+        );
 
         sleep(1);
 
@@ -112,7 +128,6 @@ class ReviewWebsiteJob implements ShouldQueue
         Storage::disk('public')->put('reviews/' . $today . '/contents/' . $host_id . '.txt', $webContent);
 
         $this->mark($host_id, 'success');
-
     }
 
 
