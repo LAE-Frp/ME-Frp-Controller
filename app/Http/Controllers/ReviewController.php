@@ -11,7 +11,7 @@ class ReviewController extends Controller
     //
 
     public function next() {
-        $hosts = Host::whereNull('review_at')->simplePaginate(1);
+        $hosts = Host::whereIn('protocol', ['http', 'https', 'tcp'])->whereNull('review_at')->simplePaginate(1);
 
 
         // screenshot url
