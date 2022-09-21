@@ -1,6 +1,8 @@
 <x-app-layout>
     <h1>已经发现的客户</h1>
 
+    <p>总计: {{ $count }}</p>
+
     <table>
         {{-- 表头 --}}
         <thead>

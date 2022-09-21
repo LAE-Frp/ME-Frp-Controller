@@ -17,7 +17,9 @@ class UserController extends Controller
         //
         $users = User::simplePaginate(10);
 
-        return view('users.index', compact('users'));
+        $count = User::count();
+
+        return view('users.index', ['users' => $users, 'count' => $count]);
     }
 
     /**

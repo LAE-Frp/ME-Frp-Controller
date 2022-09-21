@@ -1,6 +1,8 @@
 <x-app-layout>
     <h1>主机</h1>
 
+    <p>总计: {{ $count }}</p>
+
     <table>
         <thead>
             <tr>
