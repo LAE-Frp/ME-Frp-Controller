@@ -34,7 +34,6 @@ class ReviewWebsiteJob implements ShouldQueue
     {
         //
 
-        $this->http = Http::remote('remote')->asForm();
     }
 
     /**
@@ -46,6 +45,7 @@ class ReviewWebsiteJob implements ShouldQueue
     {
         //
 
+        $this->http = Http::remote('remote')->asForm();
 
         Host::with('server')->where('status', 'running')->whereIn('protocol', ['http', 'https', 'tcp'])->chunk(100, function ($hosts) {
             foreach ($hosts as $host) {
