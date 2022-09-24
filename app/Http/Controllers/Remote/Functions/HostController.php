@@ -53,7 +53,7 @@ class HostController extends Controller
         ]);
 
         $data = $request->only([
-            'name', 'protocol', 'local_address', 'server_id'
+            'name', 'protocol', 'local_address', 'server_id', 'remote_port', 'custom_domain',
         ]);
 
         if (!strpos($request->local_address, ':')) {
