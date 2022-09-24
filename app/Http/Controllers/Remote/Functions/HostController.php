@@ -44,6 +44,7 @@ class HostController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'name' => 'required',
             'protocol' => 'required',
@@ -51,7 +52,9 @@ class HostController extends Controller
             'server_id' => 'required',
         ]);
 
-        $data = $request->all();
+        $data = $request->only([
+            'name', 'protocol', 'local_address', 'server_id'
+        ]);
 
         if (!strpos($request->local_address, ':')) {
             return $this->error('本地地址必须包含端口号。');

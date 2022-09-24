@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Jobs\Cost;
 use App\Http\Controllers\ServerController;
+use App\Jobs\AddFreeTraffic;
 use App\Jobs\ReviewWebsiteJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -29,6 +30,9 @@ class Kernel extends ConsoleKernel
 
         // every three days
         $schedule->job(new ReviewWebsiteJob())->daily()->name('reviewWebsiteJob')->withoutOverlapping()->onOneServer();
+
+        $schedule->job(new AddFreeTraffic())->hourly()->name('addFreeTrafficToUser')->onOneServer();
+
     }
 
     /**

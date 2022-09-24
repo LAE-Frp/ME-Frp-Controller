@@ -1,6 +1,22 @@
 <x-app-layout>
     <h1>主机</h1>
 
+    <form name="filter">
+        Host ID: <input type="text" name="host_id" value="{{ Request::get('host_id') }}" />
+        名称: <input type="text" name="name" value="{{ Request::get('name') }}" />
+
+        {{-- 是否拥有免费流量 --}}
+        <select name="has_free_traffic">
+            <option value="">是否拥有免费流量</option>
+            <option value="1" @if (Request::get('has_free_traffic') == '1') selected @endif>是</option>
+            <option value="0" @if (Request::get('has_free_traffic') == '0') selected @endif>否</option>
+        </select>
+
+
+
+        <button type="submit">筛选</button>
+    </form>
+
     <p>总计: {{ $count }}</p>
 
     <table>
@@ -19,6 +35,7 @@
                 <th scope="col">上载流量</th>
                 <th scope="col">服务器</th>
                 <th scope="col">隧道状态</th>
+                <th>月免费流量</th>
                 <th>创建时间</th>
                 <th>更新时间</th>
                 <th>操作</th>
@@ -58,6 +75,7 @@
                         @endif
                     </td>
 
+                    <td>{{ $host->free_traffic }} GB</td>
                     <td>{{ $host->created_at }}</td>
                     <td>{{ $host->updated_at }}</td>
                     <td>

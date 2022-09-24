@@ -16,6 +16,17 @@
 
 
 
+    <form action="{{ route('hosts.update', $host->host_id) }}" method="POST">
+        @csrf
+        @method('PATCH')
+        <h3>月免费流量</h3>
+        <input type="text" name="free_traffic" value="{{ $host->free_traffic ?? 0 }}" /> GB
+
+        <button type="submit">更新</button>
+    </form>
+
+
+
 
     {{-- @if ($host->protocol == 'http' || $host->protocol == 'https')
         <h3>网页截图</h3>
@@ -23,7 +34,7 @@
     @endif --}}
 
     <h3>配置文件</h3>
-    <pre id="config"></pre>
+    <textarea id="config" cols="80" rows="20" readonly="readonly"></textarea>
     <script>
         let tunnel_config = {!! $host !!}
         // let put_config()
@@ -70,7 +81,7 @@ bind_port = ${local_addr[1]}
 #------ Visitor config file --------
 `
             }
-            document.getElementById('config').innerHTML = config;
+            document.getElementById('config').value = config;
         };
 
         put_config();

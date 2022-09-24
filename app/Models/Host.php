@@ -11,7 +11,7 @@ class Host extends Model
 
     protected $fillable = [
         'name', 'protocol', 'custom_domain', 'local_address', 'remote_port', 'client_token',
-        'sk', 'status', 'server_id', 'user_id', 'price', 'host_id'
+        'sk', 'status', 'server_id', 'user_id', 'price', 'host_id', 'free_traffic'
     ];
 
     // 路由主键为 host_id
@@ -34,6 +34,7 @@ class Host extends Model
 
     protected $casts = [
         'suspended_at' => 'datetime',
+        'last_add_free_traffic_at' => 'datetime',
     ];
 
 

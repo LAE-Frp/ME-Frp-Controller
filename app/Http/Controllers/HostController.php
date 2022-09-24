@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Host;
 use Illuminate\Http\Request;
+
 class HostController extends Controller
 {
     /**
@@ -11,12 +12,26 @@ class HostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $hosts = Host::with('user')->simplePaginate(100);
+        $hosts = Host::with('user');
 
-        $count = Host::count();
+        // if has has_free_traffic
+        if ($request->has_free_traffic == 1) {
+            $hosts = $hosts->where('free_traffic', '>', 0);
+        }
+
+        foreach (['host_id', 'name'] as $key => $value) {
+            // dd($key, $value);
+            if ($request->{$key}) {
+                $hosts->where($key, 'LIKE', '%' . $value . '%');
+            }
+        }
+
+        $count = $hosts->count();
+
+        $hosts = $hosts->simplePaginate(100);
 
         return view('hosts.index', ['hosts' => $hosts, 'count' => $count]);
     }
@@ -94,6 +109,8 @@ class HostController extends Controller
         $this->http->patch('hosts/' . $host->host_id, [
             'status' => $request->status,
         ]);
+
+        $host->update($request->all());
 
         return back()->with('success', '正在执行对应的操作，操作将不会立即生效，因为它需要进行同步。');
     }
