@@ -3,6 +3,16 @@
 
     <p>总计: {{ $count }}</p>
 
+
+    <form name="filter">
+        用户 ID: <input type="text" name="id" value="{{ Request::get('id') }}" />
+        名称: <input type="text" name="name" value="{{ Request::get('name') }}" />
+        邮箱: <input type="text" name="name" value="{{ Request::get('email') }}" />
+
+        <button type="submit">筛选</button>
+    </form>
+
+
     <table>
         {{-- 表头 --}}
         <thead>

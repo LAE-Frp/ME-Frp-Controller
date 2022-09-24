@@ -12,12 +12,24 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $users = User::simplePaginate(10);
-
+        $users = new User();
         $count = User::count();
+
+        foreach ($request->all() as $key => $value) {
+            if (empty($value)) {
+                continue;
+            }
+            if ($request->{$key}) {
+                $users = $users->where($key, 'LIKE', '%' . $value . '%');
+            }
+        }
+
+        $count = $users->count();
+
+        $users = $users->simplePaginate(100);
 
         return view('users.index', ['users' => $users, 'count' => $count]);
     }

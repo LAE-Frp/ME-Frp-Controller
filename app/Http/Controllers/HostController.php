@@ -22,10 +22,18 @@ class HostController extends Controller
             $hosts = $hosts->where('free_traffic', '>', 0);
         }
 
-        foreach (['host_id', 'name'] as $key => $value) {
-            // dd($key, $value);
+        foreach ($request->all() as $key => $value) {
+
+            if (empty($value)) {
+                continue;
+            }
+
+            if ($key === 'has_free_traffic') {
+                continue;
+            }
+
             if ($request->{$key}) {
-                $hosts->where($key, 'LIKE', '%' . $value . '%');
+                $hosts = $hosts->where($key, 'LIKE', '%' . $value . '%');
             }
         }
 

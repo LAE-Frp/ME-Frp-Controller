@@ -12,6 +12,14 @@
             <option value="0" @if (Request::get('has_free_traffic') == '0') selected @endif>否</option>
         </select>
 
+        <select name="protocol">
+            <option value="">协议</option>
+            <option value="http" @if (Request::get('protocol') == 'http') selected @endif>HTTP</option>
+            <option value="https" @if (Request::get('protocol') == 'https') selected @endif>HTTPS</option>
+            <option value="tcp" @if (Request::get('protocol') == 'tcp') selected @endif>TCP</option>
+            <option value="udp" @if (Request::get('protocol') == 'udp') selected @endif>UDP</option>
+        </select>
+
 
 
         <button type="submit">筛选</button>
