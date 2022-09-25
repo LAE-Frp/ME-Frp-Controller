@@ -22,13 +22,8 @@ class HostController extends Controller
             $hosts = $hosts->where('free_traffic', '>', 0);
         }
 
-        foreach ($request->all() as $key => $value) {
-
+        foreach ($request->except(['has_free_traffic', 'page']) as $key => $value) {
             if (empty($value)) {
-                continue;
-            }
-
-            if ($key === 'has_free_traffic') {
                 continue;
             }
 
