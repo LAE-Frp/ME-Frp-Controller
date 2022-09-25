@@ -16,6 +16,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ReviewWebsiteJob implements ShouldQueue
@@ -124,6 +125,7 @@ class ReviewWebsiteJob implements ShouldQueue
     private function print($msg)
     {
         echo $msg . PHP_EOL;
+        Log::info($msg);
     }
 
     private function takeScreenshot($host_id, $url)
