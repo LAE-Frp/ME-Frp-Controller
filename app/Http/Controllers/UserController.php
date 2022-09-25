@@ -18,7 +18,7 @@ class UserController extends Controller
         $users = new User();
         $count = User::count();
 
-        foreach ($request->all() as $key => $value) {
+        foreach ($request->except(['page']) as $key => $value) {
             if (empty($value)) {
                 continue;
             }
