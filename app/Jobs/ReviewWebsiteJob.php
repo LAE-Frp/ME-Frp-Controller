@@ -69,7 +69,7 @@ class ReviewWebsiteJob implements ShouldQueue
 
                             // if header include text/html
                             if (strpos($http->header('Content-Type'), 'text/html') !== false) {
-                                $this->print('检测到 TCP: ' . $url . ' 是 HTTP 服务');
+                                $this->print('检测到 TCP: ' . $url . ' 是 HTTP 服务，所以暂停了隧道。');
 
                                 $this->http->patch('hosts/' . $host->host_id, [
                                     'status' => 'suspended',
