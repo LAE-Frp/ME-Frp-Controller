@@ -151,13 +151,21 @@ class ReviewWebsiteJob implements ShouldQueue
         }
 
         // wait page
-        $driver->wait(10, 1000)->until(
+        $driver->wait(10, 100)->until(
             function () use ($driver) {
                 return $driver->executeScript('return document.readyState') == 'complete';
             }
         );
 
-        sleep(1);
+        // wait page all assets loaded
+        $driver->wait(10, 100)->until(
+            function () use ($driver) {
+                return $driver->executeScript('return window.performance.timing.loadEventEnd') > 0;
+            }
+        );
+
+        // 等待 5s 动画后
+        sleep(5);
 
         // get web content
         $webContent = $driver->getPageSource();
