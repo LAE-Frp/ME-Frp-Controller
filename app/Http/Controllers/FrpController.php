@@ -60,8 +60,13 @@ class FrpController extends Controller
         try {
             $resp = Http::withBasicAuth($this->frpServer->dashboard_user, $this->frpServer->dashboard_password)->get($addr)->json() ?? [];
 
-            if ($this->frpServer->status != 'up') {
-                $this->frpServer->status = 'up';
+
+            // if under maintenance
+
+            if ($this->frpServer->status !== 'maintenance') {
+                if ($this->frpServer->status !== 'up') {
+                    $this->frpServer->status = 'up';
+                }
             }
         } catch (ConnectionException) {
             $this->frpServer->status = 'down';
