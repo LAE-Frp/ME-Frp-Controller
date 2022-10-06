@@ -100,11 +100,14 @@ class HostController extends Controller
                 return $this->error('域名格式不正确。');
             }
 
-            $request->validate([
-                "custom_domain" => 'required|unique:hosts,custom_domain',
-            ]);
-
-
+            if ($request->has('custom_domain')) {
+                $custom_domain_search = Host::where('custom_domain', $request->custom_domain)->where('protocol', $request->protocol)->exists();
+                if ($custom_domain_search) {
+                    return $this->error('这个域名已经被使用了');
+                }
+            } else {
+                return $this->error('必须提供域名。');
+            }
 
             $data['custom_domain'] = Str::lower($request->custom_domain);
 
