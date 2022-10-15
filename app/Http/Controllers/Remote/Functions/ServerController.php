@@ -14,6 +14,8 @@ class ServerController extends Controller
         $servers = Server::select([
             'id',
             'name',
+            'server_address',
+
             'allow_http',
             'allow_https',
             'allow_tcp',
@@ -31,7 +33,7 @@ class ServerController extends Controller
             'price_per_gb',
             'free_traffic',
 
-            'is_china_mainland'
+            'is_china_mainland',
         ])->get();
 
         return $this->success($servers);
