@@ -17,7 +17,7 @@ Route::get('/remote', Remote\RemoteController::class);
 
 Route::apiResource('work-orders', Remote\WorkOrder\WorkOrderController::class);
 Route::apiResource('work-orders.replies', Remote\WorkOrder\ReplyController::class);
-Route::apiResource('hosts', Remote\HostController::class)->only(['update', 'destroy']);
+Route::apiResource('hosts', Remote\HostController::class)->only(['show', 'update', 'destroy']);
 
 
 // 注意，以下路由都是暴露给用户的，并且必须经过 'Remote' 中间件，否则这些路由将不安全。

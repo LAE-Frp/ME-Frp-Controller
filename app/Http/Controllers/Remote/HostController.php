@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class HostController extends Controller
 {
+    public function show(Host $host)
+    {
+        
+        return $this->success($host);
+    }
+
     public function update(Request $request, Host $host)
     {
         //
@@ -70,6 +76,5 @@ class HostController extends Controller
         $HostController = new Functions\HostController();
 
         return $HostController->destroy($host);
-
     }
 }
