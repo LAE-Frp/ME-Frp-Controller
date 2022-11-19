@@ -77,11 +77,13 @@ class WorkOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  WorkOrder  $work_order
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(WorkOrder $work_order)
     {
-        //
+        $work_order->delete();
+
+        return $this->deleted();
     }
 }
