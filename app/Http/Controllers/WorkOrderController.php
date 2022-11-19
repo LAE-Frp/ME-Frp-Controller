@@ -61,8 +61,7 @@ class WorkOrderController extends Controller
             'status' => 'sometimes|in:closed,on_hold,in_progress',
         ]);
 
-        $http = Http::remote('remote')->asForm();
-
+        $http = Http::remote()->asForm();
 
         $http = $http->patch('work-orders/' . $work_order->id, [
             'status' => $request->status,
