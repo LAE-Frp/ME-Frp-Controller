@@ -3,16 +3,26 @@
 
     <h4>收益</h4>
     <div>
-        <h3>
-            本月收益
-        </h3>
-        <p>
-            直接扣费金额: {{ $module['balance'] }} 元
-        </p>
-        <p>
-            Drops: {{ $module['drops'] }}
-        </p>
-        <p>本月总计收入 CNY: {{ $module['total'] }} </p>
+        <table>
+            <thead>
+                <th>年 / 月</th>
+
+                @for ($i = 1; $i < 13; $i++)
+                    <th>{{ $i }} 月</th>
+                @endfor
+            </thead>
+            <tbody>
+
+                @foreach ($years as $year => $months)
+                    <tr>
+                        <td>{{ $year }}</td>
+                        @for ($i = 1; $i < 13; $i++)
+                            <td>{{ $months[$i]['should_balance'] ?? 0 }} 元</td>
+                        @endfor
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 
 
