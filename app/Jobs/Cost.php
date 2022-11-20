@@ -149,7 +149,7 @@ class Cost implements ShouldQueue
                             // 记录到日志
                             // if local
                             if (config('app.env') == 'local') {
-                                Log::debug('计费：' . $host->server->name . ' ' . $host->name . ' ' . $gb . 'GB ' . $cost . ' 的 Drops 消耗');
+                                Log::debug('计费：' . $host->server->name . ' ' . $host->name . ' ' . $gb . 'GB ' . $cost . ' 的 CNY 消耗');
                             }
 
 

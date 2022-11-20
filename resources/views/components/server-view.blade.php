@@ -23,7 +23,7 @@
         @else
             <span style="color: red">境外</span>
         @endif
-        <p>每 GB 需要消耗的 Drops: {{ $server->price_per_gb }}</p>
+        <p>每 GB 需要消耗的 CNY: {{ $server->price_per_gb }}</p>
     </small>
 </div>
 <hr />

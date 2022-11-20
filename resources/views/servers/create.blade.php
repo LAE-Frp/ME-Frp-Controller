@@ -105,12 +105,12 @@
                     </label>
                 </div>
 
-                <p>每 GB 需要消耗的 Drops</p>
+                <p>每 GB 需要消耗的 CNY</p>
                 <div class="row">
                     <div class="col-auto">
                         <div class="input-group input-group-sm mb-3">
                             <input type="text" value="1" required class="form-control"
-                                placeholder="每 GB 需要消耗的 Drops" name="price_per_gb">
+                                placeholder="每 GB 需要消耗的 CNY" name="price_per_gb">
                         </div>
                     </div>
                 </div>
