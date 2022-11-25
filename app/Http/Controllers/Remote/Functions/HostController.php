@@ -128,6 +128,11 @@ class HostController extends Controller
                 return $this->error('无法使用这个远程端口。');
             }
 
+            // 检查端口范围
+            if ($request->remote_port < $server->min_port || $request->remote_port > $server->max_port) {
+                return $this->error('远程端口号必须在 ' . $server->min_port . ' 和 ' . $server->max_port . ' 之间。');
+            }
+
             $remote_port_search = Host::where('server_id', $server->id)->where('remote_port', $request->remote_port)->where('protocol', strtolower($request->protocol))->exists();
             if ($remote_port_search) {
                 return $this->error('这个远程端口已经被使用了。');
