@@ -19,12 +19,11 @@
     <p>端口号范围: {{ $server->min_port }} ~ {{ $server->max_port }} </p>
     <p>隧道数量: {{ $server->tunnels }} / {{ $server->max_tunnels }} </p>
 
-    @php($serverInfo = (object) (new \App\Http\Controllers\FrpController($server->id))->serverInfo())
     <p>客户端数量:{{ $serverInfo->client_counts ?? 0 }},连接数:{{ $serverInfo->cur_conns ?? 0 }},进站流量:{{ unitConversion($serverInfo->total_traffic_in ?? 0) }},出站流量:{{ unitConversion($serverInfo->total_traffic_out ?? 0) }},
         {{ $serverInfo->version ?? '离线' }}。
     </p>
 
-{{-- 
+{{--
     <h3>使用这个服务器创建隧道</h3>
 
     <form action="{{ route('tunnels.store') }}" method="POST">
@@ -67,7 +66,7 @@
         <button type="submit" class="btn btn-primary">创建</button>
 
     </form> --}}
-{{-- 
+{{--
     <script>
         const protocol = document.getElementById('protocol');
         protocol.addEventListener('change', () => {

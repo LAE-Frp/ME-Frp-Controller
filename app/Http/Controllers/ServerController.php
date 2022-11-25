@@ -6,8 +6,9 @@ use App\Models\Server;
 use App\Jobs\ServerCheckJob;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use GuzzleHttp\Exception\RequestException;
 
 class ServerController extends Controller
 {
@@ -73,7 +74,13 @@ class ServerController extends Controller
      */
     public function show(Server $server)
     {
-        //
+        try {
+            $serverInfo = (object)(new \App\Http\Controllers\FrpController($server->id))->serverInfo();
+        } catch (RequestException $e) {
+            Log::error($e->getMessage());
+            return redirect()->route('servers.index')->with('error', '服务器连接失败。');
+        }
+
         return view('servers.show', compact('server'));
     }
 
@@ -117,7 +124,6 @@ class ServerController extends Controller
             $request->merge(['allow_stcp' => $request->has('allow_stcp') ? true : false]);
             $request->merge(['allow_stcp' => $request->has('allow_stcp') ? true : false]);
             $request->merge(['is_china_mainland' => $request->has('is_china_mainland') ? true : false]);
-
         }
 
         $data = $request->all();
