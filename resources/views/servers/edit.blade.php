@@ -177,9 +177,6 @@
         </div>
 
 
-
-
-        @php($serverInfo = (object) (new \App\Http\Controllers\FrpController($server->id))->serverInfo())
         <div class="tab-pane fade show active" id="nav-info" role="tabpanel">
             <table class="table">
                 <tbody>

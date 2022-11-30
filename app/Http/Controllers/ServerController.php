@@ -93,7 +93,9 @@ class ServerController extends Controller
     public function edit(Server $server)
     {
         //
-        return view('servers.edit', compact('server'));
+        $serverInfo = (object) (new \App\Http\Controllers\FrpController($server->id))->serverInfo();
+
+        return view('servers.edit', compact('server', 'serverInfo'));
     }
 
     /**
