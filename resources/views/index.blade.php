@@ -33,4 +33,5 @@
             <x-Server-View :server="$server" :url="route('servers.edit', $server->id)" />
         @endforeach
     @endif
+
 </x-app-layout>

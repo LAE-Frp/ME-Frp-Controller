@@ -9,7 +9,7 @@ use App\Http\Controllers\ServerController;
 use App\Http\Controllers\WorkOrderController;
 use App\Http\Controllers\UserController;
 
-Route::view('/login', 'login')->name('login');
+Route::get('/login', [IndexController::class, 'index'])->name('login');
 Route::post('/login', [IndexController::class, 'login']);
 
 
