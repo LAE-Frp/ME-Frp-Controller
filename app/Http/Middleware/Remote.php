@@ -6,6 +6,8 @@ use Closure;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class Remote
 {
@@ -31,11 +33,16 @@ class Remote
         }
 
         if ($request->user_id) {
-            if ($request->isMethod('post')) {
-                $user = User::where('id', $request->user['id'])->firstOrCreate([
-                    'id' => $request->user['id'],
-                    'name' => $request->user['name'],
-                    'email' => $request->user['email'],
+            $user = User::where('id', $request->user_id)->first();
+            // if user null
+            if (!$user) {
+                $http = Http::remote('remote')->asForm();
+                $user = $http->get('/users/' . $request->user_id)->json();
+
+                $user = User::create([
+                    'id' => $user['id'],
+                    'name' => $user['name'],
+                    'email' => $user['email'],
                 ]);
             }
         }
