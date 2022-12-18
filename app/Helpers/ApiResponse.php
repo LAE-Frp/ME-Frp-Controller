@@ -7,31 +7,6 @@ trait ApiResponse
     // RESTful API response
     public function apiResponse($data, $status = 200)
     {
-        // if data is paginated, return paginated data
-        if ($data instanceof \Illuminate\Pagination\Paginator) {
-            $data = $data->toArray();
-            $data['data'] = $data['data'];
-            $data['meta'] = [
-                'per_page' => $data['per_page'],
-                'current_page' => $data['current_page'],
-                'from' => $data['from'],
-                'to' => $data['to'],
-            ];
-            $data['paginate'] = 1;
-
-        } else {
-            $data = [
-                'data' => $data,
-            ];
-        }
-        $data['status'] = $status;
-
-        if ($status >= 200 && $status <= 299) {
-            $data['success'] = 1;
-        } else {
-            $data['success'] = 0;
-        }
-
         return response()->json($data, $status);
     }
 

@@ -199,7 +199,7 @@ class HostController extends Controller
 
 
         // 寻找服务器的逻辑
-        // $task_id = $task['data']['id'];
+        // $task_id = $task['id'];
 
         // $this->http->patch('/tasks/' . $task_id, [
         //     'title' => '已找到服务器',
@@ -377,7 +377,7 @@ class HostController extends Controller
         // ])->json();
 
         // // 寻找服务器的逻辑
-        // $task_id = $task['data']['id'];
+        // $task_id = $task['id'];
 
         // $this->http->patch('/tasks/' . $task_id, [
         //     'title' => '正在关闭您的客户端连接...',
