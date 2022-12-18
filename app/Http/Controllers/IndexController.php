@@ -42,7 +42,7 @@ class IndexController extends Controller
             if ($modules->successful()) {
                 $servers = Server::where('status', '!=', 'up')->get();
 
-                $years = $this->http->get('modules')->json()['data'];
+                $years = $this->http->get('modules')->json();
 
                 return view('index', compact('servers', 'years'));
             } else {

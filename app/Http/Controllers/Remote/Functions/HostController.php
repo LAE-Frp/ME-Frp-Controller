@@ -165,9 +165,9 @@ class HostController extends Controller
         $host_response = $host->json();
 
         if ($host->successful()) {
-            $host_id = $host_response['data']['id'];
+            $host_id = $host_response['id'];
         } else {
-            return $this->error($host_response['data']);
+            return $this->error($host_response);
         }
 
         $data['client_token'] = Str::random(50);
