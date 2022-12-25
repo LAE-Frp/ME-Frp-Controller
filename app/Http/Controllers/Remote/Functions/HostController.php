@@ -322,6 +322,12 @@ class HostController extends Controller
 
         // if has name
         if ($request->has('name')) {
+
+            // 检测 name 是否为空
+            if (empty($request['name'])) {
+                return $this->error('名称不能为空。');
+            }
+
             $this->http->patch('/hosts/' . $host->host_id, [
                 'name' => $request['name'],
             ]);
