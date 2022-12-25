@@ -4,9 +4,12 @@ namespace App\Helpers;
 
 trait ApiResponse
 {
-    // RESTful API response
     public function apiResponse($data, $status = 200)
     {
+        if (is_string($data)) {
+            $data = ['message' => $data];
+        }
+
         return response()->json($data, $status);
     }
 
