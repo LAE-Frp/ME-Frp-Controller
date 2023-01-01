@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\WorkOrder\WorkOrder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class WorkOrderController extends Controller
@@ -40,7 +40,8 @@ class WorkOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -51,7 +52,8 @@ class WorkOrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, WorkOrder $work_order)
@@ -61,15 +63,23 @@ class WorkOrderController extends Controller
             'status' => 'sometimes|in:closed,on_hold,in_progress',
         ]);
 
-        $http = Http::remote()->asForm();
+        $http = Http::remote('remote')->asForm();
 
-        $http = $http->patch('work-orders/' . $work_order->id, [
-            'status' => $request->status,
-        ]);
+        if ($request->filled('status')) {
+            $http = $http->patch('work-orders/' . $work_order->id, [
+                'status' => $request->status,
+            ]);
 
-        // if has status
-        if ($request->has('status')) {
-            return back()->with('success', '工单状态已更新，请等待同步。');
+            if ($request->has('status')) {
+                return back()->with('success', '工单状态已更新，请等待同步。');
+            }
+        } else {
+            // if work order status is open or user_replied, then set to read
+            if ($work_order->status == 'open' || $work_order->status == 'user_replied') {
+                $http = $http->patch('work-orders/' . $work_order->id, [
+                    'status' => 'read',
+                ]);
+            }
         }
 
         $work_order->load(['replies', 'user', 'host']);
@@ -84,7 +94,8 @@ class WorkOrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -95,19 +106,21 @@ class WorkOrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  WorkOrder $work_order
+     * @param \Illuminate\Http\Request $request
+     * @param WorkOrder                $work_order
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, WorkOrder $work_order)
     {
-    //
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
