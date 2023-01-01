@@ -501,8 +501,11 @@ EOF;
 
     public function stop_all(Request $request)
     {
-        dispatch(new StopAllHostJob($request->user_id));
+        // dispatch(new StopAllHostJob($request->user_id));
+        $hosts = Host::where('user_id', $request->user_id)->update(['status' => 'stopped']);
 
-        return $this->success();
+        return $this->success([
+            'tunnels' => $hosts,
+        ]);
     }
 }
