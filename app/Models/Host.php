@@ -58,6 +58,19 @@ class Host extends Model
         return $query->where('status', 'running')->where('price', '!=', 0);
     }
 
+    public function close()
+    {
+        $frp = new FrpController($this->server_id);
+        $closed = $frp->close($this->run_id);
+
+        if ($closed) {
+            $cache_key = 'frpTunnel_data_' . $this->client_token;
+            Cache::forget($cache_key);
+        }
+
+        return true;
+    }
+
     // on createing
     protected static function boot()
     {
@@ -72,14 +85,16 @@ class Host extends Model
 
         // update
         static::updating(function (self $model) {
-            $frp = new FrpController($model->server_id);
             $closed = false;
-
             if ($model->status == 'suspended') {
                 $model->suspended_at = now();
-                $closed = $frp->close($model->run_id);
+
+                $model->close();
+                $closed = true;
             } else if ($model->status == 'stopped') {
-                $closed = $frp->close($model->run_id);
+
+                $model->close();
+                $closed = true;
             } else if ($model->status == 'running') {
                 $model->suspended_at = null;
             }
@@ -87,9 +102,6 @@ class Host extends Model
             if ($closed) {
                 $model->run_id = null;
             }
-
-            $cache_key = 'frpTunnel_data_' . $model->client_token;
-            Cache::forget($cache_key);
         });
     }
 }

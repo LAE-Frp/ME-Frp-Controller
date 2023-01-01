@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Remote\Functions;
 
 use App\Models\Host;
 use App\Models\Server;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Jobs\StopAllHostJob;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\FrpController;
-use Illuminate\Support\Arr;
 
 class HostController extends Controller
 {
@@ -496,5 +497,12 @@ EOF;
         }
 
         return $config;
+    }
+
+    public function stop_all(Request $request)
+    {
+        dispatch(new StopAllHostJob($request->user_id));
+
+        return $this->success();
     }
 }
