@@ -37,5 +37,5 @@ Route::group(['prefix' => '/functions', 'as' => 'functions.'], function () {
 
     Route::get('traffics', Functions\TrafficController::class);
 
-    Route::post('stop', [Functions\HostController::class, 'stop_all']);
+    // Route::post('stop', [Functions\HostController::class, 'stop_all']);
 });
