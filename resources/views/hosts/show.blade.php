@@ -25,6 +25,24 @@
         <button type="submit">更新</button>
     </form>
 
+    <hr />
+    <p>如果停止隧道，那么客户端将会立即下线，在手动启动之前，客户端都将无法登录。</p>
+    @if ($host->status == 'stopped')
+        <form action="{{ route('hosts.update', $host->host_id) }}" method="POST">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="status" value="running" />
+            <button type="submit">启动</button>
+        </form>
+    @else
+        <form action="{{ route('hosts.update', $host->host_id) }}" method="POST">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="status" value="stopped" />
+            <button type="submit">停止</button>
+        </form>
+    @endif
+
 
 
 

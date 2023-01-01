@@ -54,6 +54,10 @@ class FrpController extends Controller
         return $this->cache('traffic_' . $name, '/traffic/' . $name);
     }
 
+    public function close($run_id) {
+        return $this->get('/client/close/' . $run_id);
+    }
+
     protected function get($url)
     {
         $addr = 'http://' . $this->frpServer->server_address . ':' . $this->frpServer->dashboard_port . '/api' . $url;

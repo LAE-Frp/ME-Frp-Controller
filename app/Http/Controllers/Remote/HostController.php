@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Remote;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FrpController;
 use App\Models\Host;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,7 @@ class HostController extends Controller
 {
     public function show(Host $host)
     {
-        
+
         return $this->success($host);
     }
 

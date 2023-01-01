@@ -6,6 +6,7 @@ use App\Models\Host;
 use App\Models\Server;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PortManagerController extends Controller
 {
@@ -15,9 +16,13 @@ class PortManagerController extends Controller
             return $this->failed('登录失败，请检查配置文件。');
         }
 
-        if (!is_null($request->content['user']['user'])) {
-            return $this->failed('用户不被允许。');
+        if (!isset($request->content['user']['run_id'])) {
+            return $this->failed('此客户端不安全，我们不能让您登录。');
         }
+
+        // if (!is_null($request->content['user']['user'])) {
+        //     return $this->failed('用户不被允许。');
+        // }
 
         if (is_null($server)) {
             return $this->failed('服务器不存在。');
@@ -70,6 +75,9 @@ class PortManagerController extends Controller
 
         $cache_key = 'frpTunnel_data_' . $host->client_token;
         Cache::put($cache_key, ['status' => 'online']);
+
+        $host->run_id = $request->content['user']['run_id'];
+        $host->saveQuietly();
 
         return $this->frpSuccess();
     }

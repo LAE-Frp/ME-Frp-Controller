@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Http\Controllers\FrpController;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Host extends Model
 {
@@ -69,9 +70,14 @@ class Host extends Model
         });
 
         // update
-        static::updating(function ($model) {
+        static::updating(function (self $model) {
+            $frp = new FrpController($model->server_id);
+
             if ($model->status == 'suspended') {
                 $model->suspended_at = now();
+                $frp->close($model->run_id);
+            } else if ($model->status == 'stopped') {
+                $frp->close($model->run_id);
             } else if ($model->status == 'running') {
                 $model->suspended_at = null;
             }
