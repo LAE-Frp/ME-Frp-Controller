@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Http\Controllers\FrpController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
 
 class Host extends Model
 {
@@ -72,15 +73,23 @@ class Host extends Model
         // update
         static::updating(function (self $model) {
             $frp = new FrpController($model->server_id);
+            $closed = false;
 
             if ($model->status == 'suspended') {
                 $model->suspended_at = now();
-                $frp->close($model->run_id);
+                $closed = $frp->close($model->run_id);
             } else if ($model->status == 'stopped') {
-                $frp->close($model->run_id);
+                $closed = $frp->close($model->run_id);
             } else if ($model->status == 'running') {
                 $model->suspended_at = null;
             }
+
+            if ($closed) {
+                $model->run_id = null;
+            }
+
+            $cache_key = 'frpTunnel_data_' . $model->client_token;
+            Cache::forget($cache_key);
         });
     }
 }
