@@ -11,6 +11,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
+        "parsedown/laravel": "^1.2",
         "php-webdriver/webdriver": "^1.12"
     },
     "require-dev": {

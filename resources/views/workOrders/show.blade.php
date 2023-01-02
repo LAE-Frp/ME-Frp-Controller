@@ -20,7 +20,7 @@
     <h2>回复</h2>
 
     <ul>
-         @foreach ($work_order->replies as $reply)
+        @foreach ($work_order->replies as $reply)
             <div class="card border-light mb-3 shadow">
                 <div class="card-header d-flex w-100 justify-content-between">
                     @if ($reply->user_id)
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="card-body">
-                    {{ \Illuminate\Mail\Markdown::parse($reply->content) }}
+                    @parsedown($reply->content)
                 </div>
             </div>
         @endforeach
