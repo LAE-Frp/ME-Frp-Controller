@@ -7,7 +7,7 @@
     <a href="?status=closed">关闭工单</a>
 
     <h3>{{ $work_order->title }}</h3>
-    <h3>{{ $work_order->content }}</h3>
+    <h5>@parsedown($work_order->content)</h5>
 
     @if (isset($work_order->host->host_id))
         <h3>服务 页面 <a href="{{ route('hosts.show', $work_order->host->host_id) }}">{{ $work_order->host->name }}</a></h3>
