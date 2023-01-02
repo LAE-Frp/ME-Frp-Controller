@@ -4,20 +4,11 @@ namespace App\Http\Controllers\Remote\WorkOrder;
 
 use App\Http\Controllers\Controller;
 use App\Models\WorkOrder\Reply;
+use App\Models\WorkOrder\WorkOrder;
 use Illuminate\Http\Request;
 
 class ReplyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -27,42 +18,25 @@ class ReplyController extends Controller
      */
     public function store(Request $request)
     {
-        // store
-        $reply = new Reply();
-        $reply->work_order_id = $request->work_order_id;
-        $reply->content = $request->input('content');
-        $reply->user_id = $request->user_id;
-        $reply->name = $request->name;
+        $reply = Reply::create($request->all());
 
-        $reply->save();
-
-        // return
         return $this->created($reply);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
+     * @param WorkOrder $work_order
+     * @param Reply $reply
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, WorkOrder $work_order, Reply $reply)
     {
-        //
+        $reply->update($request->all());
+
+        return $this->updated($reply);
     }
 
     /**
@@ -72,10 +46,8 @@ class ReplyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Reply $reply)
+    public function destroy(WorkOrder $work_order, Reply $reply)
     {
-        //
-
         $reply->delete();
 
         return $this->deleted();
