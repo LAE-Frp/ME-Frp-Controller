@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Http;
+use App\Jobs\StatusJob;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\FrpController;
 use Illuminate\Database\Eloquent\Model;
@@ -61,15 +61,19 @@ class Host extends Model
 
     public function close()
     {
-        $frp = new FrpController($this->server_id);
-        $closed = $frp->close($this->run_id);
+        if ($this->run_id) {
+            $frp = new FrpController($this->server_id);
+            $closed = $frp->close($this->run_id);
 
-        if ($closed) {
-            $cache_key = 'frpTunnel_data_' . $this->client_token;
-            Cache::forget($cache_key);
+            if ($closed) {
+                $cache_key = 'frpTunnel_data_' . $this->client_token;
+                Cache::forget($cache_key);
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     // on createing
@@ -84,8 +88,7 @@ class Host extends Model
             }
         });
 
-        // update
-        static::updating(function (self $model) {
+        static::updated(function (self $model) {
             $closed = false;
             if ($model->status == 'suspended') {
                 $model->suspended_at = now();
@@ -106,9 +109,9 @@ class Host extends Model
 
             // if is dirty status
             if ($model->isDirty('status')) {
-                Http::remote()->asForm()->patch('hosts/' . $model->host_id, [
+                dispatch(new StatusJob($model->id, [
                     'status' => $model->status,
-                ]);
+                ]));
             }
         });
     }
