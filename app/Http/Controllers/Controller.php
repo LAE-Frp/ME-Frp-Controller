@@ -17,6 +17,6 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        $this->http = Http::remote('remote')->asForm();
+        $this->http = Http::remote()->asForm();
     }
 }

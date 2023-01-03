@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\FrpController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Cache;
 
 class Host extends Model
 {
@@ -105,7 +106,7 @@ class Host extends Model
 
             // if is dirty status
             if ($model->isDirty('status')) {
-                $this->http->patch('hosts/' . $model->host_id, [
+                Http::remote()->asForm()->patch('hosts/' . $model->host_id, [
                     'status' => $model->status,
                 ]);
             }
