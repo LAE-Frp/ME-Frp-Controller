@@ -102,6 +102,13 @@ class Host extends Model
             if ($closed) {
                 $model->run_id = null;
             }
+
+            // if is dirty status
+            if ($model->isDirty('status')) {
+                $this->http->patch('hosts/' . $model->host_id, [
+                    'status' => $model->status,
+                ]);
+            }
         });
     }
 }

@@ -109,10 +109,6 @@ class HostController extends Controller
             return back()->with('success', '已发送扣费请求。');
         }
 
-        $this->http->patch('hosts/' . $host->host_id, [
-            'status' => $request->status,
-        ]);
-
         $host->update($request->all());
 
         return back()->with('success', '正在执行对应的操作，操作将不会立即生效，因为它需要进行同步。');
