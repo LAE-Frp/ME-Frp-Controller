@@ -100,6 +100,12 @@ class ReviewWebsiteJob implements ShouldQueue
                             'status' => 'suspended',
                         ]);
 
+                        $this->http->post('/broadcast/users/' . $host->user_id, [
+                            'title' => $host->name . ' 已被暂停',
+                            'message' => '我们检测到您没有正确解析域名，所以已经暂停了隧道。',
+                            'type' => 'info'
+                        ]);
+
                         continue;
                     }
 

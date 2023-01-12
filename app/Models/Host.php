@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\FrpController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Http;
 
 class Host extends Model
 {
@@ -99,8 +100,7 @@ class Host extends Model
 
                 $model->close();
                 $closed = true;
-
-                $this->http->post('/broadcast/users/' . $model->user_id, [
+                Http::remote()->post('/broadcast/users/' . $model->user_id, [
                     'title' => '客户端已被踢下线',
                     'message' => $model->name . ' 的客户端因为隧道停止而被踢下线。',
                     'type' => 'warn'
