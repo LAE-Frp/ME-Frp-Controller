@@ -109,6 +109,19 @@ class HostController extends Controller
             return back()->with('success', '已发送扣费请求。');
         }
 
+        if ($request->status === 'stopped') {
+            $this->http->post('/broadcast/users/' . $host->user_id, [
+                'title' => '管理员关闭了 ' . $host->name,
+                'type' => 'warn'
+            ]);
+        } else if ($request->status === 'suspended') {
+            $this->http->post('/broadcast/users/' . $host->user_id, [
+                'title' => '管理员暂停了 ' . $host->name,
+                'message' => '您可能映射了我们禁止的内容，请检查后再次启动。',
+                'type' => 'warn'
+            ]);
+        }
+
         $host->update($request->all());
 
         return back()->with('success', '正在执行对应的操作，操作将不会立即生效，因为它需要进行同步。');
@@ -123,6 +136,12 @@ class HostController extends Controller
     public function destroy(Host $host)
     {
         // 销毁前的逻辑
+
+        $this->http->post('/broadcast/users/' . $host->user_id, [
+            'title' => '我们删除了 ' . $host->name,
+            'message' => '您可能映射了我们禁止的内容，请检查后再次启动。',
+            'type' => 'warn'
+        ]);
 
         $HostController = new Remote\Functions\HostController();
         $HostController->destroy($host);

@@ -99,6 +99,13 @@ class Host extends Model
 
                 $model->close();
                 $closed = true;
+
+                $this->http->post('/broadcast/users/' . $model->user_id, [
+                    'title' => '客户端已被踢下线',
+                    'message' => $model->name . ' 的客户端因为隧道停止而被踢下线。',
+                    'type' => 'warn'
+                ]);
+
             } else if ($model->status == 'running') {
                 $model->suspended_at = null;
             }

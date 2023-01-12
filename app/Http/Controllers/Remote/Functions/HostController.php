@@ -225,6 +225,15 @@ class HostController extends Controller
         //     'status' => 'success',
         // ]);
 
+        // 通知
+        $this->http->post('/broadcast/users/' . $request->user_id, [
+            'title' => '欢迎使用 ME Frp',
+            'message' => '尽情享受吧～',
+            'type' => 'success'
+        ]);
+
+
+
         return $this->created($host);
     }
 
