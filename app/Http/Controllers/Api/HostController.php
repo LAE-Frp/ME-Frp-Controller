@@ -47,8 +47,6 @@ class HostController extends Controller
 
         $host = $host->toArray();
 
-        $host['server'] = Arr::only($host['server'], $this->filter());
-
         return $host;
     }
 }
