@@ -20,5 +20,5 @@ Route::prefix('tunnel')->name('api.tunnel.')->group(function () {
 });
 
 Route::middleware('api.token')->get('hosts', function () {
-    return Host::paginate(10);
+    return Host::with('server')->paginate(10);
 });
