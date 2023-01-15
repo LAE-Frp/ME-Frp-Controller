@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PortManagerController;
 use App\Models\Host;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\HostController;
+use App\Http\Controllers\PortManagerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,5 @@ Route::prefix('tunnel')->name('api.tunnel.')->group(function () {
     Route::post('/handler/{server}', [PortManagerController::class, 'handler'])->name('handler');
 });
 
-Route::middleware('api.token')->get('hosts', function () {
-    return Host::with('server')->paginate(10);
-});
+Route::middleware('api.token')->get('hosts', [HostController::class, 'index']);
+Route::middleware('api.token')->get('hosts/{host}', [HostController::class, 'show']);
